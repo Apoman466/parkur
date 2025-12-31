@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Skyline: Multi-Player Survivor Final</title>
+    <title>Skyline: Multiplayer Survivor Final</title>
     <style>
         body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Segoe UI', sans-serif; touch-action: none; }
         #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; text-align: center; color: white; }
-        #char-preview { width: 130px; height: 130px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 2px solid #00f2fe; margin: 10px; }
+        #char-preview { width: 120px; height: 120px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 2px solid #00f2fe; margin: 10px; }
         #ui { position: absolute; top: 15px; left: 15px; color: #fff; z-index: 50; pointer-events: none; text-shadow: 2px 2px 4px #000; font-size: 14px; }
         #mobile-ui { position: absolute; bottom: 30px; width: 100%; display: none; justify-content: space-between; padding: 0 30px; box-sizing: border-box; z-index: 150; pointer-events: none; }
         .m-zone { pointer-events: auto; display: flex; flex-direction: column; align-items: center; }
@@ -21,14 +21,10 @@
     <audio id="bg-music" loop><source src="sarki.mp3" type="audio/mpeg"></audio>
 
     <div id="overlay">
-        <h2 style="color:#00f2fe; margin:0;">SKYLINE: MULTIPLAYER</h2>
+        <h2 style="color:#00f2fe; margin:0;">SKYLINE: MULTIPLAYER FIX</h2>
         <div id="char-preview"></div>
         <input type="text" id="username" placeholder="ADINIZ">
-        <input type="text" id="room-input" placeholder="ODA KODU">
-        <br>
-        <div style="font-size:12px;">Gözlük <input type="checkbox" id="c-glasses" onchange="updatePreview()"> | Çanta <input type="checkbox" id="c-bag" onchange="updatePreview()"></div>
-        <div style="font-size:12px;">Kulaklık <input type="checkbox" id="c-phones" onchange="updatePreview()"> | Şapka <input type="checkbox" id="c-hat" onchange="updatePreview()"></div>
-        <input type="range" id="skin-hue" min="0" max="360" value="180" oninput="updatePreview()" style="width:150px;">
+        <input type="text" id="room-input" placeholder="ODA KODU (Örn: deneyap)">
         <br>
         <button class="btn" onclick="loginAndStart()">BAŞLA</button>
     </div>
@@ -53,7 +49,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
-        // FIREBASE CONFIG - Kendi bilgilerinden emin ol kanka
         const firebaseConfig = { 
             apiKey: "AIzaSyD-gQNjOz03WhErBDD24hpJr4q5h30CCGU", 
             authDomain: "ekiple-parkur.firebaseapp.com", 
@@ -65,43 +60,23 @@
 
         let scene, camera, renderer, player, clock = new THREE.Clock();
         let platforms = [], obstacles = [], keys = {}, velocityY = 0, isJumping = false;
-        let yaw = 0, checkpoint = new THREE.Vector3();
+        let yaw = 0, checkpoint = new THREE.Vector3(0, 5, 0);
         let moveSpeed = 0.45, isGameStarted = false, myId, roomId, otherPlayers = {};
         let touchX = 0, isTouching = false;
 
-        function createHuman(cfg) {
+        function createHuman(name, hue) {
             let g = new THREE.Group();
-            let m = new THREE.MeshStandardMaterial({color: new THREE.Color(`hsl(${cfg.hue}, 70%, 50%)`)});
+            let m = new THREE.MeshStandardMaterial({color: new THREE.Color(`hsl(${hue || 180}, 70%, 50%)`)});
             let s = new THREE.MeshStandardMaterial({color: 0xffdbac});
             let torso = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.3, 0.5), m);
             let head = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.55, 0.55), s); head.position.y = 1.0;
             let legL = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1.0, 0.3), s); legL.position.set(-0.25, -1.1, 0); legL.name="legL";
             let legR = legL.clone(); legR.position.x = 0.25; legR.name="legR";
             g.add(torso, head, legL, legR);
-            if(cfg.glasses){ let gl=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.1,0.1), new THREE.MeshBasicMaterial({color:0})); gl.position.set(0,1,0.28); g.add(gl); }
-            if(cfg.bag){ let bg=new THREE.Mesh(new THREE.BoxGeometry(0.7,0.8,0.3), new THREE.MeshStandardMaterial({color:0x222222})); bg.position.set(0,0.1,-0.42); g.add(bg); }
-            if(cfg.phones){ let ph=new THREE.Mesh(new THREE.TorusGeometry(0.32,0.04,8,16), new THREE.MeshBasicMaterial({color:0})); ph.rotation.x=Math.PI/2; ph.position.y=1.1; g.add(ph); }
-            if(cfg.hat){ let ht=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.5,0.15,16), new THREE.MeshStandardMaterial({color:0x333333})); ht.position.y=1.3; g.add(ht); }
             let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d'); canvas.width = 128; canvas.height = 32;
-            ctx.fillStyle = 'white'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center'; ctx.fillText(cfg.name || "Siz", 64, 24);
+            ctx.fillStyle = 'white'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center'; ctx.fillText(name || "Oyuncu", 64, 24);
             let sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: new THREE.CanvasTexture(canvas)})); sprite.position.y = 2.0; sprite.scale.set(2.5, 0.6, 1); g.add(sprite);
             return g;
-        }
-
-        let preScene, preCam, preRen, preModel;
-        function initPreview() {
-            preScene = new THREE.Scene(); preCam = new THREE.PerspectiveCamera(50, 1, 0.1, 10); preCam.position.set(0, 0.5, 4.5);
-            preRen = new THREE.WebGLRenderer({ antialias: true, alpha: true }); preRen.setSize(130, 130);
-            document.getElementById('char-preview').appendChild(preRen.domElement);
-            preScene.add(new THREE.AmbientLight(0xffffff, 1));
-            updatePreview();
-            (function anim() { requestAnimationFrame(anim); if(preModel) preModel.rotation.y += 0.02; preRen.render(preScene, preCam); })();
-        }
-
-        function updatePreview() {
-            if(preModel) preScene.remove(preModel);
-            preModel = createHuman({hue: document.getElementById('skin-hue').value, glasses: document.getElementById('c-glasses').checked, bag: document.getElementById('c-bag').checked, phones: document.getElementById('c-phones').checked, hat: document.getElementById('c-hat').checked, name: "Görünüş"});
-            preModel.position.y = 0.5; preScene.add(preModel);
         }
 
         function loginAndStart() {
@@ -111,22 +86,22 @@
                 myId = res.user.uid; 
                 roomId = document.getElementById('room-input').value || "oda1";
                 document.getElementById('room-id').innerText = roomId;
-                const cfg = { name: document.getElementById('username').value || res.user.displayName, hue: document.getElementById('skin-hue').value, glasses: document.getElementById('c-glasses').checked, bag: document.getElementById('c-bag').checked, phones: document.getElementById('c-phones').checked, hat: document.getElementById('c-hat').checked };
                 document.getElementById('overlay').style.display = 'none';
                 if(/Android|iPhone/i.test(navigator.userAgent)) document.getElementById('mobile-ui').style.display = 'flex';
-                isGameStarted = true; initGame(cfg);
-            }).catch(e => { alert("Giriş Hatası: " + e.message); });
+                isGameStarted = true; 
+                initGame(document.getElementById('username').value || res.user.displayName);
+            });
         }
 
-        function initGame(cfg) {
+        function initGame(name) {
             scene = new THREE.Scene(); scene.background = new THREE.Color(0x87CEEB);
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
             renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
             scene.add(new THREE.AmbientLight(0xffffff, 1));
-            player = createHuman(cfg); scene.add(player);
+            player = createHuman(name, 180); scene.add(player);
             
-            // MULTIPLAYER DİNLEYİCİSİ - Kesin Çözüm
+            // ODA SENKRONİZASYONU (GÜNCELLENDİ)
             const roomRef = db.ref('rooms/' + roomId + '/players');
             roomRef.child(myId).onDisconnect().remove();
 
@@ -136,59 +111,55 @@
                 for(let id in data) {
                     if(id === myId) continue;
                     if(!otherPlayers[id]) { 
-                        otherPlayers[id] = createHuman(data[id].config); 
+                        otherPlayers[id] = createHuman(data[id].name, data[id].hue); 
                         scene.add(otherPlayers[id]); 
                     }
-                    otherPlayers[id].position.lerp(new THREE.Vector3(data[id].x, data[id].y, data[id].z), 0.2);
+                    otherPlayers[id].position.set(data[id].x, data[id].y, data[id].z);
                     otherPlayers[id].rotation.y = data[id].ry;
                 }
                 for(let id in otherPlayers) { if(!data[id]) { scene.remove(otherPlayers[id]); delete otherPlayers[id]; } }
             });
 
-            // MOBİL KONTROL
+            // MOBİL BAKİŞ
             window.addEventListener('touchstart', e => { if(e.touches[0].clientX > window.innerWidth/2) { isTouching = true; touchX = e.touches[0].clientX; } });
-            window.addEventListener('touchmove', e => { if(isTouching) { let dx = e.touches[0].clientX - touchX; yaw -= dx * 0.007; touchX = e.touches[0].clientX; } });
+            window.addEventListener('touchmove', e => { if(isTouching) { let dx = e.touches[0].clientX - touchX; yaw -= dx * 0.008; touchX = e.touches[0].clientX; } });
             window.addEventListener('touchend', () => isTouching = false);
-            
             document.addEventListener('mousemove', e => { if(document.pointerLockElement) yaw -= e.movementX*0.003; });
             document.addEventListener('mousedown', () => { if(isGameStarted) document.body.requestPointerLock(); });
-            window.addEventListener('keydown', e => keys[e.code] = true); 
-            window.addEventListener('keyup', e => keys[e.code] = false);
+            window.addEventListener('keydown', e => keys[e.code] = true); window.addEventListener('keyup', e => keys[e.code] = false);
 
-            // Parkur Üretimi (10 Engel)
+            // PARKUR VE CHECKPOINT ÜRETİMİ
             const radius = 100;
-            const obs = ['spike','hammer','vanish','wind','speed','bounce','moving','rotate','lava','fake'];
-            for(let i = 0; i < 500; i++) {
-                let a = i * 0.23, x = Math.cos(a)*radius, y = i*4.6, z = Math.sin(a)*radius;
-                let type = (i===0)?'checkpoint':(i%15===0?'checkpoint': obs[Math.floor(Math.random()*obs.length)]);
-                if(i===0) { checkpoint.set(x, y+5, z); player.position.copy(checkpoint); }
-                createPlatform(x, y, z, 24, new THREE.Color().setHSL(i/50, 0.8, 0.5), type);
+            const obs = ['spike','hammer','vanish','bounce','moving','lava'];
+            for(let i = 0; i < 400; i++) {
+                let a = i * 0.25, x = Math.cos(a)*radius, y = i*4.5, z = Math.sin(a)*radius;
+                let isCP = (i % 12 === 0);
+                let type = isCP ? 'checkpoint' : obs[Math.floor(Math.random()*obs.length)];
+                if(i === 0) { checkpoint.set(x, y + 4, z); player.position.copy(checkpoint); }
+                createPlatform(x, y, z, isCP ? 30 : 22, isCP ? 0x00FF00 : 0xffffff, type);
             }
 
-            // Senkronizasyon Döngüsü
             setInterval(() => {
                 if(isGameStarted) {
                     db.ref('rooms/'+roomId+'/players/'+myId).set({
-                        x: player.position.x, y: player.position.y, z: player.position.z, ry: player.rotation.y, config: cfg
+                        x: player.position.x, y: player.position.y, z: player.position.z, ry: player.rotation.y, name: name
                     });
                 }
             }, 50);
-
             animate();
         }
 
         function createPlatform(x, y, z, s, c, t) {
-            let m = new THREE.Mesh(new THREE.BoxGeometry(s, 2, s), new THREE.MeshStandardMaterial({color: (t==='checkpoint'?0x00FF00:c), transparent: t==='fake', opacity: t==='fake'?0.5:1}));
+            let m = new THREE.Mesh(new THREE.BoxGeometry(s, 2, s), new THREE.MeshStandardMaterial({color: c}));
             m.position.set(x, y, z); scene.add(m);
-            if(t==='spike') { for(let j=0;j<4;j++){ let sp=new THREE.Mesh(new THREE.ConeGeometry(0.7,2,8), new THREE.MeshStandardMaterial({color:0xff0000})); sp.position.set((Math.random()-0.5)*15, 1.5, (Math.random()-0.5)*15); m.add(sp); } }
-            else if(t==='hammer') { let hG=new THREE.Group(); let head=new THREE.Mesh(new THREE.BoxGeometry(5,5,5), new THREE.MeshStandardMaterial({color:0x333333})); head.position.y=-10; hG.add(head); hG.position.set(x,y+10,z); scene.add(hG); obstacles.push({m:hG, t:'hammer'}); }
-            else if(t==='rotate') { let bar=new THREE.Mesh(new THREE.BoxGeometry(s,1,1), new THREE.MeshStandardMaterial({color:0x000000})); bar.position.y=1.5; m.add(bar); obstacles.push({m:bar, t:'rotate'}); }
+            if(t==='checkpoint') {
+                let light = new THREE.PointLight(0x00ff00, 1, 40); light.position.set(x,y+5,z); scene.add(light);
+            }
             platforms.push({mesh: m, type: t, ox: x, oy: y, oz: z});
         }
 
         function animate() {
             requestAnimationFrame(animate); if(!isGameStarted) return;
-            let time = clock.getElapsedTime();
             player.rotation.y = yaw;
             let dir = new THREE.Vector3();
             if(keys['KeyW']) dir.z -= 1; if(keys['KeyS']) dir.z += 1;
@@ -196,41 +167,30 @@
             dir.applyQuaternion(player.quaternion).normalize();
             player.position.addScaledVector(dir, moveSpeed);
 
-            // Ayak Animasyonu
-            if((keys['KeyW']||keys['KeyS']||keys['KeyA']||keys['KeyD']) && !isJumping) {
-                player.getObjectByName("legL").rotation.x = Math.sin(time*12)*0.6;
-                player.getObjectByName("legR").rotation.x = -Math.sin(time*12)*0.6;
-            }
-
             if(keys['Space'] && !isJumping) { velocityY = 0.52; isJumping = true; }
             player.position.y += velocityY; velocityY -= 0.02;
 
             platforms.forEach(p => {
-                let pBox = new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1, 4, 1));
-                if(pBox.intersectsBox(new THREE.Box3().setFromObject(p.mesh))) {
-                    if(p.type==='spike' && player.position.y < p.mesh.position.y+2.5) player.position.copy(checkpoint);
-                    if(p.type==='vanish') setTimeout(() => p.mesh.visible = false, 700);
+                let b = new THREE.Box3().setFromObject(p.mesh);
+                if(new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1.2, 4, 1.2)).intersectsBox(b)) {
+                    if(velocityY <= 0 && player.position.y > p.mesh.position.y) {
+                        player.position.y = p.mesh.position.y + 2.8; velocityY = 0; isJumping = false;
+                        if(p.type === 'checkpoint') { 
+                            checkpoint.set(p.mesh.position.x, p.mesh.position.y + 4, p.mesh.position.z); 
+                        }
+                    }
                     if(p.type==='bounce') velocityY = 0.8;
-                    if(p.type==='speed') player.position.addScaledVector(dir, 0.7);
-                    if(p.type==='checkpoint' && checkpoint.y < p.mesh.position.y) checkpoint.copy(p.mesh.position).y += 5;
-                    if(velocityY <= 0 && player.position.y > p.mesh.position.y && p.type!=='fake') { player.position.y = p.mesh.position.y+2.8; velocityY=0; isJumping=false; }
+                    if(p.type==='vanish') setTimeout(() => p.mesh.visible = false, 600);
                 }
-                if(p.type==='moving') p.mesh.position.x = p.ox + Math.sin(time*2)*15;
+                if(p.type==='moving') p.mesh.position.x = p.ox + Math.sin(Date.now()*0.002)*15;
             });
 
-            obstacles.forEach(o => {
-                if(o.t==='hammer') o.m.rotation.z = Math.sin(time*3)*1.5;
-                if(o.t==='rotate') o.m.rotation.y += 0.05;
-                if(new THREE.Box3().setFromObject(o.m).intersectsBox(new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1.5,4,1.5)))) player.position.copy(checkpoint);
-            });
-
-            if(player.position.y < -50) player.position.copy(checkpoint);
-            camera.position.lerp(player.position.clone().add(new THREE.Vector3(0, 10, 25).applyQuaternion(player.quaternion)), 0.1);
+            if(player.position.y < -40) player.position.copy(checkpoint);
+            camera.position.lerp(player.position.clone().add(new THREE.Vector3(0, 12, 28).applyQuaternion(player.quaternion)), 0.1);
             camera.lookAt(player.position.clone().add(new THREE.Vector3(0, 2, 0)));
             document.getElementById('h-val').innerText = Math.floor(player.position.y);
             renderer.render(scene, camera);
         }
-        window.onload = initPreview;
     </script>
 </body>
 </html>
