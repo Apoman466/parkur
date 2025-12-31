@@ -3,112 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SKYLINE OMEGA: MULTIPLAYER SURVIVOR</title>
+    <title>SKYLINE OMEGA: ULTIMATE</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-        body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Poppins', sans-serif; touch-action: none; }
-        
-        /* GİRİŞ EKRANI */
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #fff 0%, #87CEEB 100%); display: flex; align-items: center; justify-content: center; z-index: 5000; transition: 0.8s; }
-        .login-card { background: white; padding: 40px; border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.2); text-align: center; border: 6px solid #4CAF50; width: 350px; }
-        .btn-google { background: #4285F4; color: white; padding: 15px 30px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; transition: 0.3s; box-shadow: 0 5px 15px rgba(66,133,244,0.3); }
-        .btn-google:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(66,133,244,0.5); }
-        
-        /* OYUN İÇİ PANEL */
-        #ui { position: absolute; top: 20px; left: 20px; z-index: 100; pointer-events: none; }
-        .stat-badge { background: rgba(255,255,255,0.9); padding: 10px 20px; border-radius: 20px; border: 2px solid #4CAF50; font-weight: bold; margin-bottom: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Segoe UI', sans-serif; touch-action: none; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; align-items: center; justify-content: center; z-index: 5000; }
+        .card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); text-align: center; border: 4px solid #4CAF50; width: 300px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 2px solid #ddd; box-sizing: border-box; }
+        .btn-g { background: #4285F4; color: white; padding: 12px; border: none; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; }
         
         /* KOZMETİK PANELİ */
-        #cosmetic-menu { position: absolute; right: -350px; top: 0; width: 320px; height: 100%; background: rgba(255,255,255,0.98); z-index: 4000; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 25px; box-shadow: -10px 0 30px rgba(0,0,0,0.1); overflow-y: auto; border-left: 5px solid #4CAF50; }
-        #cosmetic-menu.active { right: 0; }
-        .toggle-btn { position: absolute; left: -70px; top: 20px; width: 60px; height: 60px; background: #4CAF50; color: white; border-radius: 15px 0 0 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 30px; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
+        #side-menu { position: absolute; right: -320px; top: 0; width: 300px; height: 100%; background: rgba(255,255,255,0.95); transition: 0.4s; z-index: 4000; padding: 20px; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; }
+        #side-menu.open { right: 0; }
+        .tab-btn { position: absolute; left: -60px; top: 20px; width: 60px; height: 60px; background: #4CAF50; color: white; border-radius: 15px 0 0 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 25px; }
         
-        .section-title { font-weight: 700; color: #333; margin: 15px 0 5px; display: block; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
-        select, input[type="color"] { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid #eee; margin-bottom: 10px; font-family: inherit; }
-        
-        /* MOBİL KONTROLLER */
-        #mobile-controls { position: absolute; bottom: 40px; width: 100%; display: none; justify-content: space-between; padding: 0 40px; box-sizing: border-box; z-index: 100; }
-        .joystick-base { width: 150px; height: 150px; background: rgba(255,255,255,0.2); border: 3px solid white; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; }
-        .jump-btn { width: 100px; height: 100px; background: #FFC107; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 5px solid white; box-shadow: 0 10px 0 #E6A800; }
-        .jump-btn:active { transform: translateY(5px); box-shadow: 0 5px 0 #E6A800; }
-
-        #loading { position: fixed; top:0; left:0; width:100%; height:100%; background:#fff; z-index: 9999; display: flex; align-items:center; justify-content:center; font-size: 24px; font-weight: bold; color: #4CAF50; }
+        select, .c-pick { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; }
+        #ui { position: absolute; top: 20px; left: 20px; z-index: 100; pointer-events: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="loading">SİSTEM YÜKLENİYOR...</div>
     <audio id="bg-music" loop><source src="sarki.mp3" type="audio/mpeg"></audio>
 
     <div id="overlay">
-        <div class="login-card">
-            <h1 style="color:#4CAF50; margin-bottom: 5px;">SKYLINE OMEGA</h1>
-            <p style="color:#666; font-size: 14px; margin-bottom: 25px;">The Ultimate Survivor Experience</p>
-            <input type="text" id="room-input" style="width:100%; padding:15px; border-radius:15px; border:2px solid #eee; margin-bottom:15px; box-sizing:border-box; text-align:center;" placeholder="ODA KODU GİRİN">
-            <button class="btn-google" onclick="initLogin()">GOOGLE İLE GİRİŞ YAP VE BAŞLA</button>
+        <div class="card">
+            <h2 style="color:#4CAF50">SKYLINE OMEGA</h2>
+            <input type="text" id="nick-input" placeholder="OYUNCU ADI">
+            <input type="text" id="room-input" placeholder="ODA KODU">
+            <button class="btn-g" onclick="login()">GOOGLE İLE BAŞLA</button>
         </div>
     </div>
 
-    <div id="ui">
-        <div class="stat-badge">✈️ ALTITUDE: <span id="h-val">0</span>m</div>
-        <div class="stat-badge">🌍 ROOM: <span id="r-val">-</span></div>
-    </div>
+    <div id="ui">YÜKSEKLİK: <span id="h-val">0</span>m | ODA: <span id="r-val">-</span></div>
 
-    <div id="cosmetic-menu">
-        <div class="toggle-btn" onclick="document.getElementById('cosmetic-menu').classList.toggle('active')">👕</div>
-        <h2 style="margin-top:0; color:#4CAF50;">CUSTOMIZE</h2>
+    <div id="side-menu">
+        <div class="tab-btn" onclick="document.getElementById('side-menu').classList.toggle('open')">👕</div>
+        <h3 style="color:#4CAF50">AVATAR EDİTÖRÜ</h3>
         
-        <span class="section-title">Body Suit</span>
-        <select id="skin-select" onchange="applySkins()">
-            <option value="human">Standard Human</option>
-            <option value="robot">Cyber Drone</option>
-            <option value="beast">Wild Creature</option>
-            <option value="alien">Void Walker</option>
-            <option value="hero">Super Soldier</option>
+        <label>KOSTÜM TİPİ</label>
+        <select id="skin-type" onchange="syncMyStyle()">
+            <option value="normal">Normal</option>
+            <option value="kedi">Kedi Kulaklı</option>
+            <option value="robot">Cyber Robot</option>
+            <option value="kral">Kral Tacı</option>
         </select>
-        <input type="color" id="skin-color" value="#4CAF50" onchange="applySkins()">
+        <input type="color" id="skin-color" value="#4CAF50" class="c-pick" onchange="syncMyStyle()">
 
-        <span class="section-title">Headwear (50+ Style)</span>
-        <select id="head-select" onchange="applySkins()">
-            <option value="none">None</option>
-            <option value="ears_cat">Cat Ears</option>
-            <option value="ears_dog">Dog Ears</option>
-            <option value="headphones">Pro Gaming Headset</option>
-            <option value="hat_cap">Sports Cap</option>
-            <option value="hat_top">Gentleman Hat</option>
-            <option value="crown">Golden Crown</option>
-            <option value="horns">Demon Horns</option>
-            <option value="halo">Angel Halo</option>
+        <label>GÖZLÜK / VİZÖR</label>
+        <select id="face-type" onchange="syncMyStyle()">
+            <option value="none">Yok</option>
+            <option value="glasses">Pilot Gözlüğü</option>
+            <option value="visor">Neon Vizör</option>
         </select>
-        <input type="color" id="head-color" value="#ffffff" onchange="applySkins()">
+        <input type="color" id="face-color" value="#333333" class="c-pick" onchange="syncMyStyle()">
 
-        <span class="section-title">Face & Vision</span>
-        <select id="face-select" onchange="applySkins()">
-            <option value="none">None</option>
-            <option value="glasses">Pilot Shades</option>
-            <option value="visor">Cyber Visor</option>
-            <option value="mask">Ninja Mask</option>
-            <option value="gasmask">Hazard Mask</option>
+        <label>SIRT ÇANTASI</label>
+        <select id="back-type" onchange="syncMyStyle()">
+            <option value="none">Yok</option>
+            <option value="pack">Çanta</option>
+            <option value="jetpack">Jetpack</option>
         </select>
-        <input type="color" id="face-color" value="#333333" onchange="applySkins()">
-
-        <span class="section-title">Backpack & Gear</span>
-        <select id="back-select" onchange="applySkins()">
-            <option value="none">None</option>
-            <option value="pack">Traveler Bag</option>
-            <option value="jetpack">Dual Turbo Jetpack</option>
-            <option value="wings">Vibrant Wings</option>
-            <option value="cape">Hero Cape</option>
-            <option value="sword">Sheathed Sword</option>
-        </select>
-        <input type="color" id="back-color" value="#E91E63" onchange="applySkins()">
-    </div>
-
-    <div id="mobile-controls">
-        <div class="joystick-base">
-            <div style="color:white; font-size:12px; opacity:0.5;">MOVE</div>
-            </div>
-        <div class="jump-btn" onpointerdown="keys['Space']=true" onpointerup="keys['Space']=false">JUMP</div>
+        <input type="color" id="back-color" value="#E91E63" class="c-pick" onchange="syncMyStyle()">
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -117,7 +71,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
-        // --- FIREBASE SETUP ---
         const firebaseConfig = { 
             apiKey: "AIzaSyD-gQNjOz03WhErBDD24hpJr4q5h30CCGU", 
             authDomain: "ekiple-parkur.firebaseapp.com",
@@ -128,146 +81,102 @@
         const db = firebase.database();
         const auth = firebase.auth();
 
-        // --- GLOBAL VARIABLES ---
-        let scene, camera, renderer, player, clock = new THREE.Clock();
-        let platforms = [], obstacles = [], otherPlayers = {}, keys = {};
-        let isGameStarted = false, myId, roomId, uName;
-        let yaw = 0, pitch = 0, velocityY = 0, isJumping = false;
-        let checkpoint = new THREE.Vector3(0, 10, 0);
-        
-        let myCosmetics = {
-            skin: 'human', sCol: '#4CAF50',
-            head: 'none', hCol: '#ffffff',
-            face: 'none', fCol: '#333333',
-            back: 'none', bCol: '#E91E63'
-        };
+        let scene, camera, renderer, player, myId, uName, roomId, isStarted = false;
+        let otherPlayers = {}, keys = {}, platforms = [], checkpoint = new THREE.Vector3();
+        let velocityY = 0, isJumping = false, yaw = 0;
 
-        window.onload = () => document.getElementById('loading').style.display = 'none';
+        // Kozmetik Verisi
+        let myStyle = { skin: 'normal', sCol: '#4CAF50', face: 'none', fCol: '#333333', back: 'none', bCol: '#E91E63' };
 
-        function initLogin() {
+        function login() {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider).then(res => {
                 myId = res.user.uid;
-                uName = res.user.displayName.split(' ')[0];
-                roomId = document.getElementById('room-input').value.trim() || "lobby";
+                uName = document.getElementById('nick-input').value || res.user.displayName.split(' ')[0];
+                roomId = document.getElementById('room-input').value || "genel";
                 document.getElementById('r-val').innerText = roomId;
-                document.getElementById('overlay').style.opacity = '0';
-                setTimeout(() => document.getElementById('overlay').style.display = 'none', 800);
-                if(/Android|iPhone/i.test(navigator.userAgent)) document.getElementById('mobile-controls').style.display = 'flex';
+                document.getElementById('overlay').style.display = 'none';
                 document.getElementById('bg-music').play().catch(()=>{});
-                startEngine();
+                initGame();
             });
         }
 
-        // --- CHARACTER ENGINE ---
-        function createCharacter(name, cosm, isMe) {
+        function createCharModel(name, style, isMe) {
             const group = new THREE.Group();
             
-            // Core Body
-            const bodyMat = new THREE.MeshStandardMaterial({color: cosm.sCol, metalness: 0.5, roughness: 0.5});
-            const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.5), bodyMat);
+            // Gövde
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.5), new THREE.MeshStandardMaterial({color: style.sCol}));
             group.add(body);
 
+            // Kafa
             const head = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.65, 0.65), new THREE.MeshStandardMaterial({color: 0xffdbac}));
             head.position.y = 1.1; group.add(head);
 
-            // Kozmetik: Kafa
-            if(cosm.head !== 'none') {
-                const hMat = new THREE.MeshStandardMaterial({color: cosm.hCol});
-                if(cosm.head.includes('ears')) {
-                    const eL = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.3, 4), hMat);
-                    eL.position.set(-0.25, 0.4, 0); head.add(eL);
-                    const eR = eL.clone(); eR.position.x = 0.25; head.add(eR);
-                }
-                if(cosm.head === 'crown') {
-                    const c = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.05, 6, 12), hMat);
-                    c.rotation.x = Math.PI/2; c.position.y = 0.4; head.add(c);
-                }
-                if(cosm.head === 'headphones') {
-                    const hp = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.1, 8, 16), hMat);
-                    hp.rotation.y = Math.PI/2; head.add(hp);
-                }
+            // KOZMETİKLER
+            if(style.skin === 'kedi') {
+                const e = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.3, 4), new THREE.MeshStandardMaterial({color: style.sCol}));
+                e.position.set(-0.25, 0.4, 0); head.add(e);
+                const e2 = e.clone(); e2.position.x = 0.25; head.add(e2);
             }
-
-            // Kozmetik: Yüz
-            if(cosm.face === 'visor') {
-                const v = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.2, 0.1), new THREE.MeshBasicMaterial({color: cosm.fCol, transparent: true, opacity: 0.8}));
+            if(style.skin === 'kral') {
+                const c = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.05, 8, 16), new THREE.MeshStandardMaterial({color: '#FFD700'}));
+                c.rotation.x = Math.PI/2; c.position.y = 0.4; head.add(c);
+            }
+            if(style.face === 'visor') {
+                const v = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.15, 0.1), new THREE.MeshBasicMaterial({color: style.fCol}));
                 v.position.set(0, 0.1, 0.3); head.add(v);
             }
-
-            // Kozmetik: Sırt
-            if(cosm.back === 'jetpack') {
-                const jMat = new THREE.MeshStandardMaterial({color: cosm.bCol});
-                const j1 = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.8), jMat);
-                j1.position.set(-0.25, 0, -0.4); group.add(j1);
-                const j2 = j1.clone(); j2.position.x = 0.25; group.add(j2);
+            if(style.back === 'jetpack') {
+                const j = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.3), new THREE.MeshStandardMaterial({color: style.bCol}));
+                j.position.set(0, 0, -0.4); group.add(j);
             }
 
-            // Name Label
-            const canvas = document.createElement('canvas');
-            canvas.width = 256; canvas.height = 64;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = isMe ? '#4CAF50' : '#E91E63';
-            ctx.font = 'bold 36px Poppins'; ctx.textAlign = 'center';
-            ctx.fillText(name, 128, 45);
+            // İsim Etiketi
+            const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+            canvas.width = 256; canvas.height = 64; ctx.fillStyle = isMe ? '#4CAF50' : '#ff00ff';
+            ctx.font = 'bold 30px Arial'; ctx.textAlign = 'center'; ctx.fillText(name, 128, 40);
             const sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: new THREE.CanvasTexture(canvas)}));
-            sprite.position.y = 2.6; sprite.scale.set(2.5, 0.6, 1);
-            group.add(sprite);
+            sprite.position.y = 2.4; sprite.scale.set(2.5, 0.6, 1); group.add(sprite);
 
             return group;
         }
 
-        function applySkins() {
-            myCosmetics.skin = document.getElementById('skin-select').value;
-            myCosmetics.sCol = document.getElementById('skin-color').value;
-            myCosmetics.head = document.getElementById('head-select').value;
-            myCosmetics.hCol = document.getElementById('head-color').value;
-            myCosmetics.face = document.getElementById('face-select').value;
-            myCosmetics.fCol = document.getElementById('face-color').value;
-            myCosmetics.back = document.getElementById('back-select').value;
-            myCosmetics.bCol = document.getElementById('back-color').value;
+        function syncMyStyle() {
+            myStyle.skin = document.getElementById('skin-type').value;
+            myStyle.sCol = document.getElementById('skin-color').value;
+            myStyle.face = document.getElementById('face-type').value;
+            myStyle.fCol = document.getElementById('face-color').value;
+            myStyle.back = document.getElementById('back-type').value;
+            myStyle.bCol = document.getElementById('back-color').value;
             
             if(player) {
-                const oldPos = player.position.clone();
-                const oldRot = player.rotation.y;
+                const p = player.position.clone();
                 scene.remove(player);
-                player = createCharacter(uName, myCosmetics, true);
-                player.position.copy(oldPos);
-                player.rotation.y = oldRot;
+                player = createCharModel(uName, myStyle, true);
+                player.position.copy(p);
                 scene.add(player);
             }
         }
 
-        // --- WORLD ENGINE ---
-        function startEngine() {
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x87CEEB);
-            scene.fog = new THREE.Fog(0x87CEEB, 100, 1000);
-
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 10000);
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+        function initGame() {
+            scene = new THREE.Scene(); scene.background = new THREE.Color(0x87CEEB);
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 5000);
+            renderer = new THREE.WebGLRenderer({antialias: true});
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.shadowMap.enabled = true;
             document.body.appendChild(renderer.domElement);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.8));
 
-            const sun = new THREE.DirectionalLight(0xffffff, 1);
-            sun.position.set(100, 200, 100);
-            sun.castShadow = true;
-            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.6));
-
-            player = createCharacter(uName, myCosmetics, true);
-            scene.add(player);
+            player = createCharModel(uName, myStyle, true); scene.add(player);
 
             // MULTIPLAYER SYNC
             const roomRef = db.ref('rooms/' + roomId + '/players');
             roomRef.child(myId).onDisconnect().remove();
             roomRef.on('value', snap => {
-                const data = snap.val();
-                if(!data) return;
+                const data = snap.val(); if(!data) return;
                 for(let id in data) {
                     if(id === myId) continue;
                     if(!otherPlayers[id]) {
-                        otherPlayers[id] = createCharacter(data[id].name, data[id].cosm, false);
+                        otherPlayers[id] = createCharModel(data[id].name, data[id].style, false);
                         scene.add(otherPlayers[id]);
                     }
                     otherPlayers[id].position.lerp(new THREE.Vector3(data[id].x, data[id].y, data[id].z), 0.2);
@@ -276,127 +185,56 @@
                 for(let id in otherPlayers) { if(!data[id]) { scene.remove(otherPlayers[id]); delete otherPlayers[id]; } }
             });
 
-            // GENERATE 20 TYPES OF OBSTACLES
-            const types = ['normal','speed','jump','vanish','moving','spike','rotate','wind','ice','lava','trampoline','fake','swing','hammer','laser','slide','boost','gravity','timer','shaker'];
-            for(let i=0; i<800; i++) {
-                let a = i * 0.22;
-                let rad = 90 + Math.sin(i*0.05)*30;
-                let x = Math.cos(a)*rad, y = i*4.8, z = Math.sin(a)*rad;
-                let isCP = (i % 12 === 0);
-                createPlatform(x, y, z, isCP ? 'checkpoint' : types[Math.floor(Math.random()*types.length)], i);
+            // BASİTLEŞTİRİLMİŞ PARKUR
+            for(let i=0; i<300; i++) {
+                let x = Math.sin(i*0.3)*40, y = i*4.5, z = Math.cos(i*0.3)*40;
+                let isCP = i % 10 === 0;
+                let mesh = new THREE.Mesh(new THREE.BoxGeometry(isCP?35:25, 2, isCP?35:25), new THREE.MeshStandardMaterial({color: isCP?0x00ff00:0xffffff}));
+                mesh.position.set(x, y, z); scene.add(mesh);
+                platforms.push({mesh, type: isCP?'cp':'n'});
                 if(i===0) { checkpoint.set(x, y+5, z); player.position.copy(checkpoint); }
             }
 
-            // CONTROLS
-            window.addEventListener('keydown', e => keys[e.code] = true);
-            window.addEventListener('keyup', e => keys[e.code] = false);
-            document.addEventListener('mousemove', e => { if(document.pointerLockElement) { yaw -= e.movementX*0.0025; pitch -= e.movementY*0.002; } });
-            document.addEventListener('mousedown', () => { if(!document.pointerLockElement) document.body.requestPointerLock(); });
+            window.onkeydown = e => keys[e.code] = true; window.onkeyup = e => keys[e.code] = false;
+            document.addEventListener('mousemove', e => { if(document.pointerLockElement) yaw -= e.movementX*0.003; });
+            document.addEventListener('mousedown', () => document.body.requestPointerLock());
 
             setInterval(() => {
-                if(player) roomRef.child(myId).set({ x: player.position.x, y: player.position.y, z: player.position.z, ry: player.rotation.y, name: uName, cosm: myCosmetics });
+                if(isStarted) roomRef.child(myId).set({x: player.position.x, y: player.position.y, z: player.position.z, ry: player.rotation.y, name: uName, style: myStyle});
             }, 50);
 
-            isGameStarted = true;
+            isStarted = true;
             animate();
         }
 
-        function createPlatform(x, y, z, t, i) {
-            let color = new THREE.Color().setHSL((i%100)/100, 0.7, 0.6);
-            if(t==='checkpoint') color = 0x00FF00;
-            if(t==='lava') color = 0xFF4400;
-            if(t==='ice') color = 0xCCFFFF;
-
-            const mesh = new THREE.Mesh(
-                new THREE.BoxGeometry(t==='checkpoint'?40:24, 2, t==='checkpoint'?40:24),
-                new THREE.MeshStandardMaterial({color: color, transparent: t==='fake', opacity: t==='fake'?0.4:1})
-            );
-            mesh.position.set(x, y, z);
-            mesh.receiveShadow = true;
-            scene.add(mesh);
-
-            if(t==='rotate') {
-                const bar = new THREE.Mesh(new THREE.BoxGeometry(24, 2, 2), new THREE.MeshStandardMaterial({color: 0xffff00}));
-                bar.position.y = 2; mesh.add(bar);
-                obstacles.push({m: bar, t: 'rotate'});
-            }
-            if(t==='hammer') {
-                const h = new THREE.Mesh(new THREE.SphereGeometry(3), new THREE.MeshStandardMaterial({color: 0x333333}));
-                h.position.y = 10; mesh.add(h);
-                obstacles.push({m: h, t: 'hammer', ox: x, oy: y+10, oz: z, off: Math.random()*10});
-            }
-
-            platforms.push({mesh, type: t, ox: x, oy: y, oz: z});
-        }
-
-        // --- GAME LOOP ---
         function animate() {
-            requestAnimationFrame(animate);
-            if(!isGameStarted) return;
-            const dt = clock.getDelta();
-            const time = clock.getElapsedTime();
-
+            requestAnimationFrame(animate); if(!isStarted) return;
             player.rotation.y = yaw;
             let dir = new THREE.Vector3();
             if(keys['KeyW']) dir.z -= 1; if(keys['KeyS']) dir.z += 1;
             if(keys['KeyA']) dir.x -= 1; if(keys['KeyD']) dir.x += 1;
             dir.applyQuaternion(player.quaternion).normalize();
-            
             player.position.addScaledVector(dir, 0.5);
 
-            // Gravity & Jump
-            if(keys['Space'] && !isJumping) { velocityY = 0.55; isJumping = true; }
-            player.position.y += velocityY;
-            velocityY -= 0.022;
+            if(keys['Space'] && !isJumping) { velocityY = 0.5; isJumping = true; }
+            player.position.y += velocityY; velocityY -= 0.02;
 
-            // Collisions
             platforms.forEach(p => {
-                const pBox = new THREE.Box3().setFromObject(p.mesh);
-                const playerBox = new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1.5, 4, 1.5));
-                
-                if(playerBox.intersectsBox(pBox)) {
+                const b = new THREE.Box3().setFromObject(p.mesh);
+                if(new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1,4,1)).intersectsBox(b)) {
                     if(velocityY <= 0 && player.position.y > p.mesh.position.y) {
-                        player.position.y = p.mesh.position.y + 3;
-                        velocityY = 0; isJumping = false;
-                        if(p.type === 'checkpoint' && checkpoint.y < p.mesh.position.y) checkpoint.set(p.mesh.position.x, p.mesh.position.y+5, p.mesh.position.z);
+                        player.position.y = p.mesh.position.y + 2.8; velocityY = 0; isJumping = false;
+                        if(p.type==='cp' && checkpoint.y < p.mesh.position.y) checkpoint.set(p.mesh.position.x, p.mesh.position.y+5, p.mesh.position.z);
                     }
-                    // Obstacle Effects
-                    if(p.type === 'speed') player.position.addScaledVector(dir, 0.8);
-                    if(p.type === 'trampoline') { velocityY = 1.2; isJumping = true; }
-                    if(p.type === 'vanish') setTimeout(() => p.mesh.visible = false, 400);
-                    if(p.type === 'lava' || p.type === 'spike') player.position.copy(checkpoint);
-                    if(p.type === 'ice') player.position.addScaledVector(dir, 0.4);
-                    if(p.type === 'wind') player.position.x += 0.6;
                 }
-                if(p.type === 'moving') p.mesh.position.x = p.ox + Math.sin(time*2)*30;
             });
 
-            // Animated Obstacles
-            obstacles.forEach(o => {
-                if(o.t === 'rotate') o.m.rotation.y += 0.1;
-                if(o.t === 'hammer') {
-                    o.m.position.x = Math.sin(time*3 + o.off)*15;
-                }
-                const oBox = new THREE.Box3().setFromObject(o.m);
-                if(new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1,2,1)).intersectsBox(oBox)) player.position.copy(checkpoint);
-            });
-
-            if(player.position.y < -60) player.position.copy(checkpoint);
-
-            // Camera
-            const camTarget = player.position.clone().add(new THREE.Vector3(0, 15, 35).applyQuaternion(player.quaternion));
-            camera.position.lerp(camTarget, 0.1);
-            camera.lookAt(player.position.clone().add(new THREE.Vector3(0, 2, 0)));
-
+            if(player.position.y < -30) player.position.copy(checkpoint);
+            camera.position.lerp(player.position.clone().add(new THREE.Vector3(0, 12, 28).applyQuaternion(player.quaternion)), 0.1);
+            camera.lookAt(player.position);
             document.getElementById('h-val').innerText = Math.floor(player.position.y);
             renderer.render(scene, camera);
         }
-
-        window.onresize = () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        };
     </script>
 </body>
 </html>
