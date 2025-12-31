@@ -3,44 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SKYLINE: PRO SURVIVOR MULTI</title>
+    <title>SKYLINE: Survivor Multi</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-        body { margin: 0; overflow: hidden; background: #000; font-family: 'Orbitron', sans-serif; touch-action: none; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; text-align: center; color: #00f2fe; }
-        .panel { background: rgba(0,0,0,0.85); padding: 40px; border: 2px solid #00f2fe; border-radius: 20px; box-shadow: 0 0 30px #00f2fe; max-width: 400px; }
-        #ui { position: absolute; top: 20px; left: 20px; color: #00f2fe; z-index: 50; pointer-events: none; text-shadow: 0 0 10px #00f2fe; }
-        #mobile-ui { position: absolute; bottom: 40px; width: 100%; display: none; justify-content: space-between; padding: 0 50px; box-sizing: border-box; z-index: 150; pointer-events: none; }
-        .m-btn { width: 75px; height: 75px; background: rgba(0,242,254,0.15); border: 2px solid #00f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; margin: 5px; pointer-events: auto; user-select: none; }
-        .btn-start { padding: 15px 45px; font-size: 20px; cursor: pointer; border-radius: 50px; background: #00f2fe; color: #000; border: none; font-weight: bold; margin-top: 20px; transition: 0.3s; box-shadow: 0 0 15px #00f2fe; }
-        .btn-start:hover { transform: scale(1.1); box-shadow: 0 0 40px #00f2fe; }
-        input { padding: 12px; border-radius: 10px; border: 1px solid #00f2fe; background: #111; color: #fff; width: 80%; margin: 10px; text-align: center; font-family: 'Orbitron'; }
-        #audio-toggle { position: absolute; top: 20px; right: 20px; z-index: 160; background: none; border: 1px solid #00f2fe; color: #00f2fe; padding: 10px; border-radius: 50%; cursor: pointer; }
+        body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; touch-action: none; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; text-align: center; }
+        .menu-box { background: white; padding: 40px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 4px solid #4CAF50; }
+        #ui { position: absolute; top: 20px; left: 20px; color: #333; z-index: 50; pointer-events: none; font-weight: bold; font-size: 18px; text-shadow: 1px 1px 0px white; }
+        #mobile-ui { position: absolute; bottom: 30px; width: 100%; display: none; justify-content: space-between; padding: 0 30px; box-sizing: border-box; z-index: 150; pointer-events: none; }
+        .m-btn { width: 65px; height: 65px; background: rgba(255,255,255,0.9); border: 2px solid #4CAF50; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #4CAF50; margin: 4px; pointer-events: auto; user-select: none; }
+        .btn-start { padding: 15px 45px; font-size: 20px; cursor: pointer; border-radius: 50px; background: #4CAF50; color: white; border: none; font-weight: bold; margin-top: 15px; box-shadow: 0 6px 0 #2E7D32; }
+        .btn-start:active { transform: translateY(4px); box-shadow: 0 2px 0 #2E7D32; }
+        input { padding: 12px; border-radius: 10px; border: 2px solid #ddd; width: 220px; margin: 8px; text-align: center; font-size: 16px; }
+        #connection-status { color: red; font-size: 12px; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
 
     <audio id="bg-music" loop><source src="sarki.mp3" type="audio/mpeg"></audio>
-    <button id="audio-toggle" onclick="toggleAudio()">🎵</button>
 
     <div id="overlay">
-        <div class="panel">
-            <h1 style="margin:0; letter-spacing: 8px;">SKYLINE</h1>
-            <p style="color: #ff00ff; font-size: 12px; margin-bottom: 20px;">EXTREME MULTIPLAYER EDITION</p>
-            <input type="text" id="username" placeholder="PILOT ADI">
+        <div class="menu-box">
+            <h1 style="color:#4CAF50; margin:0; font-size: 35px;">SKYLINE 🚀</h1>
+            <p style="color:#666;">Mülakat & Multiplayer Özel</p>
+            <input type="text" id="username" placeholder="PİLOT ADI">
             <input type="text" id="room-input" placeholder="ODA KODU (Aynı kodu girin)">
-            <button class="btn-start" onclick="loginAndStart()">SİSTEMİ BAŞLAT</button>
+            <br>
+            <button class="btn-start" onclick="loginAndStart()">SİSTEME GİR</button>
+            <div id="connection-status">Veritabanına bağlanılamıyor! Lütfen Rules'ı kontrol et.</div>
         </div>
     </div>
 
     <div id="ui">
-        <div style="font-size: 24px;">ALTITUDE: <span id="h-val">0</span>m</div>
-        <div>SESSION: <span id="room-id">OFFLINE</span></div>
-        <div id="cp-msg" style="color: #00ff00; display:none;">CHECKPOINT UPDATED!</div>
+        YÜKSEKLİK: <span id="h-val" style="color:#e91e63;">0</span>m | 
+        ODA: <span id="room-id" style="color:#4CAF50;">-</span>
     </div>
 
     <div id="mobile-ui">
-        <div class="m-zone" style="display: flex; flex-direction: column; align-items: center;">
+        <div style="display: flex; flex-direction: column; align-items: center;">
             <div class="m-btn" onpointerdown="keys['KeyW']=true" onpointerup="keys['KeyW']=false">↑</div>
             <div style="display:flex;">
                 <div class="m-btn" onpointerdown="keys['KeyA']=true" onpointerup="keys['KeyA']=false">←</div>
@@ -48,297 +47,170 @@
                 <div class="m-btn" onpointerdown="keys['KeyD']=true" onpointerup="keys['KeyD']=false">→</div>
             </div>
         </div>
-        <div class="m-zone" style="display: flex; align-items: center;">
-            <div class="m-btn" style="width:110px; height:110px; background:rgba(255,0,255,0.2); border-color:#ff00ff;" onpointerdown="keys['Space']=true" onpointerup="keys['Space']=false">JUMP</div>
+        <div style="display: flex; align-items: center;">
+            <div class="m-btn" style="width:90px; height:90px; background:#FFC107; color:white; border:none;" onpointerdown="keys['Space']=true" onpointerup="keys['Space']=false">ZIPLA</div>
         </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
-        // --- FIREBASE BAĞLANTISI ---
+        // --- SENİN GÜNCEL FIREBASE BİLGİLERİN ---
         const firebaseConfig = { 
             apiKey: "AIzaSyD-gQNjOz03WhErBDD24hpJr4q5h30CCGU", 
-            authDomain: "ekiple-parkur.firebaseapp.com", 
-            databaseURL: "https://ekiple-parkur-default-rtdb.europe-west1.firebasedatabase.app", 
+            databaseURL: "https://ekiple-parkur-default-rtdb.firebaseio.com/", 
             projectId: "ekiple-parkur" 
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Bağlantı Kontrolü
+        db.ref(".info/connected").on("value", (snap) => {
+            document.getElementById('connection-status').style.display = snap.val() ? 'none' : 'block';
+        });
+
         let scene, camera, renderer, player, clock = new THREE.Clock();
-        let platforms = [], obstacles = [], otherPlayers = {}, keys = {};
-        let velocityY = 0, isJumping = false, yaw = 0, pitch = 0;
+        let platforms = [], otherPlayers = {}, keys = {};
+        let velocityY = 0, isJumping = false, yaw = 0;
         let checkpoint = new THREE.Vector3(0, 10, 0);
-        let myId, roomId, isGameStarted = false;
+        let myId = "P-" + Math.random().toString(36).substr(2, 4);
+        let isGameStarted = false, roomId;
         let touchX = 0, isTouching = false;
 
-        function toggleAudio() { const m = document.getElementById('bg-music'); m.paused ? m.play() : m.pause(); }
-
-        // --- GELİŞMİŞ KARAKTER SİSTEMİ ---
-        function createCharacter(name, isMe) {
+        function createPlayer(name, color) {
             const group = new THREE.Group();
-            const color = isMe ? 0x00f2fe : 0xff00ff;
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.5), new THREE.MeshStandardMaterial({color: color}));
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), new THREE.MeshStandardMaterial({color: 0xffdbac}));
+            head.position.y = 1.1;
+            group.add(body, head);
             
-            // Gövde (Neon Zırh)
-            const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.3, 0.5), new THREE.MeshStandardMaterial({color: color, metalness: 0.8, roughness: 0.2}));
-            group.add(body);
-
-            // Kask (Vizörlü)
-            const head = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), new THREE.MeshStandardMaterial({color: 0x222222}));
-            head.position.y = 1.0;
-            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.15, 0.1), new THREE.MeshBasicMaterial({color: color}));
-            visor.position.set(0, 0.1, 0.3);
-            head.add(visor);
-            group.add(head);
-
-            // Ayaklar
-            const legG = new THREE.BoxGeometry(0.3, 1.0, 0.3);
-            const legL = new THREE.Mesh(legG, new THREE.MeshStandardMaterial({color: 0x333333}));
-            legL.position.set(-0.25, -1.1, 0); legL.name = "legL";
-            const legR = legL.clone();
-            legR.position.x = 0.25; legR.name = "legR";
-            group.add(legL, legR);
-
-            // İsim Etiketi
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = 256; canvas.height = 64;
-            ctx.fillStyle = isMe ? '#00f2fe' : '#ff00ff';
-            ctx.font = 'bold 40px Orbitron';
-            ctx.textAlign = 'center';
+            ctx.fillStyle = 'black'; ctx.font = 'bold 32px Arial'; ctx.textAlign = 'center';
             ctx.fillText(name, 128, 45);
             const sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: new THREE.CanvasTexture(canvas)}));
             sprite.position.y = 2.5; sprite.scale.set(3, 0.75, 1);
             group.add(sprite);
-
-            // Işık Halkası (Aura)
-            const ring = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.05, 16, 32), new THREE.MeshBasicMaterial({color: color, transparent: true, opacity: 0.3}));
-            ring.rotation.x = Math.PI/2; ring.position.y = -1.5;
-            group.add(ring);
-
             return group;
         }
 
-        // --- GİRİŞ VE BAŞLATMA ---
         function loginAndStart() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithPopup(provider).then(res => {
-                myId = res.user.uid;
-                roomId = document.getElementById('room-input').value || "genel";
-                document.getElementById('room-id').innerText = roomId;
-                document.getElementById('overlay').style.display = 'none';
-                if(/Android|iPhone/i.test(navigator.userAgent)) document.getElementById('mobile-ui').style.display = 'flex';
-                document.getElementById('bg-music').play().catch(()=>{});
-                isGameStarted = true;
-                initGame(document.getElementById('username').value || res.user.displayName.split(' ')[0]);
-            }).catch(err => alert("Giriş Başarısız: " + err.message));
+            roomId = document.getElementById('room-input').value.trim() || "lobi";
+            document.getElementById('room-id').innerText = roomId;
+            document.getElementById('overlay').style.display = 'none';
+            if(/Android|iPhone/i.test(navigator.userAgent)) document.getElementById('mobile-ui').style.display = 'flex';
+            document.getElementById('bg-music').play().catch(()=>{});
+            isGameStarted = true;
+            initGame(document.getElementById('username').value || "Pilot");
         }
 
-        function initGame(userName) {
-            scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x000000, 0.0015);
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        function initGame(uName) {
+            scene = new THREE.Scene(); scene.background = new THREE.Color(0x87CEEB);
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
             document.body.appendChild(renderer.domElement);
+            
+            scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+            const light = new THREE.DirectionalLight(0xffffff, 0.6); light.position.set(10, 20, 10); scene.add(light);
 
-            // Işıklar
-            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-            const sun = new THREE.DirectionalLight(0x00f2fe, 1);
-            sun.position.set(50, 100, 50);
-            scene.add(sun);
+            player = createPlayer(uName, 0x4CAF50); scene.add(player);
 
-            player = createCharacter(userName, true);
-            scene.add(player);
+            // MULTIPLAYER SYNC
+            const roomRef = db.ref('rooms/' + roomId);
+            roomRef.child(myId).onDisconnect().remove();
 
-            // MULTIPLAYER SİSTEMİ (GHOST SYNC)
-            const roomPlayersRef = db.ref('rooms/' + roomId + '/users');
-            roomPlayersRef.child(myId).onDisconnect().remove();
-
-            roomPlayersRef.on('value', snap => {
+            roomRef.on('value', snap => {
                 const data = snap.val();
                 if(!data) return;
                 for(let id in data) {
                     if(id === myId) continue;
                     if(!otherPlayers[id]) {
-                        otherPlayers[id] = createCharacter(data[id].name, false);
+                        otherPlayers[id] = createPlayer(data[id].name, 0xe91e63);
                         scene.add(otherPlayers[id]);
                     }
-                    // Yumuşak takip (Lerp)
                     otherPlayers[id].position.lerp(new THREE.Vector3(data[id].x, data[id].y, data[id].z), 0.2);
                     otherPlayers[id].rotation.y = data[id].ry;
                 }
-                // Ayrılanları temizle
-                for(let id in otherPlayers) {
-                    if(!data[id]) { scene.remove(otherPlayers[id]); delete otherPlayers[id]; }
-                }
+                for(let id in otherPlayers) { if(!data[id]) { scene.remove(otherPlayers[id]); delete otherPlayers[id]; } }
             });
 
-            // PARKUR ÜRETİCİ (10 FARKLI ENGEL)
-            const radius = 120;
-            const types = ['normal','speed','jump','vanish','moving','spike','rotate','laser','lava','fake'];
-            
+            // PARKUR VE ENGELLER
+            const types = ['normal','speed','jump','vanish','moving','spike'];
             for(let i = 0; i < 500; i++) {
-                let angle = i * 0.22;
-                let x = Math.cos(angle) * radius;
-                let y = i * 4.8;
-                let z = Math.sin(angle) * radius;
-                
+                let a = i * 0.25; 
+                let x = Math.cos(a)*80, y = i*4.5, z = Math.sin(a)*80;
                 let isCP = (i % 12 === 0);
-                let type = isCP ? 'checkpoint' : types[Math.floor(Math.random()*types.length)];
-                
-                if(i === 0) { checkpoint.set(x, y + 5, z); player.position.copy(checkpoint); }
-                
-                createPlatform(x, y, z, type, i);
+                if(i===0) { checkpoint.set(x, y+5, z); player.position.copy(checkpoint); }
+                createPlatform(x, y, z, isCP ? 'checkpoint' : types[Math.floor(Math.random()*types.length)], i);
             }
 
             // KONTROLLER
-            window.addEventListener('keydown', e => keys[e.code] = true);
-            window.addEventListener('keyup', e => keys[e.code] = false);
-            
-            // Mouse & Touch Dönüş
+            window.onkeydown = e => keys[e.code] = true;
+            window.onkeyup = e => keys[e.code] = false;
             document.addEventListener('mousedown', () => { if(isGameStarted) document.body.requestPointerLock(); });
-            document.addEventListener('mousemove', e => {
-                if(document.pointerLockElement) { yaw -= e.movementX * 0.002; pitch -= e.movementY * 0.002; }
-            });
-            window.addEventListener('touchstart', e => { if(e.touches[0].clientX > window.innerWidth/2) { isTouching = true; touchX = e.touches[0].clientX; } });
-            window.addEventListener('touchmove', e => { if(isTouching) { yaw -= (e.touches[0].clientX - touchX) * 0.01; touchX = e.touches[0].clientX; } });
-            window.addEventListener('touchend', () => isTouching = false);
+            document.addEventListener('mousemove', e => { if(document.pointerLockElement) yaw -= e.movementX * 0.003; });
+            
+            window.addEventListener('touchstart', e => { if(e.touches[0].clientX > window.innerWidth/2) { isTouching=true; touchX=e.touches[0].clientX; } });
+            window.addEventListener('touchmove', e => { if(isTouching){ yaw -= (e.touches[0].clientX - touchX)*0.01; touchX=e.touches[0].clientX; } });
+            window.addEventListener('touchend', () => isTouching=false);
 
-            // Veri Gönderimi (50ms)
             setInterval(() => {
-                if(isGameStarted) {
-                    db.ref('rooms/'+roomId+'/users/'+myId).set({
-                        x: player.position.x, y: player.position.y, z: player.position.z, ry: player.rotation.y, name: userName
-                    });
-                }
+                if(isGameStarted) roomRef.child(myId).set({ x: player.position.x, y: player.position.y, z: player.position.z, ry: player.rotation.y, name: uName });
             }, 50);
 
             animate();
         }
 
-        function createPlatform(x, y, z, type, index) {
-            let size = 25;
-            let color = new THREE.Color().setHSL((index % 50) / 50, 0.8, 0.5);
-            if(type === 'checkpoint') { color = new THREE.Color(0x00ff00); size = 35; }
-
-            const geometry = new THREE.BoxGeometry(size, 2, size);
-            const material = new THREE.MeshStandardMaterial({
-                color: color, 
-                transparent: (type === 'fake' || type === 'vanish'),
-                opacity: type === 'fake' ? 0.3 : 1
-            });
-            
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(x, y, z);
-            scene.add(mesh);
-
-            // Engel Detayları
-            if(type === 'checkpoint') {
-                const beacon = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 100, 8), new THREE.MeshBasicMaterial({color: 0x00ff00, transparent: true, opacity: 0.2}));
-                beacon.position.y = 50; mesh.add(beacon);
-            } else if(type === 'spike') {
-                for(let i=0; i<4; i++) {
-                    const spike = new THREE.Mesh(new THREE.ConeGeometry(1, 3, 8), new THREE.MeshStandardMaterial({color: 0xff0000}));
-                    spike.position.set((Math.random()-0.5)*15, 2, (Math.random()-0.5)*15);
-                    mesh.add(spike);
-                }
-            } else if(type === 'rotate') {
-                const bar = new THREE.Mesh(new THREE.BoxGeometry(size, 1.5, 1.5), new THREE.MeshStandardMaterial({color: 0xffaa00}));
-                bar.position.y = 2; mesh.add(bar);
-                obstacles.push({m: bar, t: 'rotate'});
-            } else if(type === 'laser') {
-                const laser = new THREE.Mesh(new THREE.BoxGeometry(size, 0.2, 0.2), new THREE.MeshBasicMaterial({color: 0xff0000}));
-                laser.position.y = 4; mesh.add(laser);
-                obstacles.push({m: laser, t: 'laser', originY: 4});
+        function createPlatform(x, y, z, t, i) {
+            let color = new THREE.Color().setHSL((i%60)/60, 0.7, 0.6);
+            if(t==='checkpoint') color = 0x00FF00;
+            const mesh = new THREE.Mesh(new THREE.BoxGeometry(t==='checkpoint'?35:24, 2, t==='checkpoint'?35:24), new THREE.MeshStandardMaterial({color: color}));
+            mesh.position.set(x, y, z); scene.add(mesh);
+            if(t==='spike') {
+                const s = new THREE.Mesh(new THREE.ConeGeometry(1.2, 2.5, 8), new THREE.MeshStandardMaterial({color: 0xff0000}));
+                s.position.set(0, 1.8, 0); mesh.add(s);
             }
-
-            platforms.push({mesh, type, ox: x, oy: y, oz: z});
+            platforms.push({mesh, type: t, ox: x, oy: y, oz: z});
         }
 
         function animate() {
             requestAnimationFrame(animate);
             if(!isGameStarted) return;
-            const dt = clock.getDelta();
-            const time = clock.getElapsedTime();
-
-            // HAREKET SİSTEMİ
             player.rotation.y = yaw;
-            let moveDir = new THREE.Vector3();
-            if(keys['KeyW']) moveDir.z -= 1; if(keys['KeyS']) moveDir.z += 1;
-            if(keys['KeyA']) moveDir.x -= 1; if(keys['KeyD']) moveDir.x += 1;
-            moveDir.applyQuaternion(player.quaternion).normalize();
-            
-            let currentSpeed = 0.5;
-            player.position.addScaledVector(moveDir, currentSpeed);
+            let dir = new THREE.Vector3();
+            if(keys['KeyW']) dir.z -= 1; if(keys['KeyS']) dir.z += 1;
+            if(keys['KeyA']) dir.x -= 1; if(keys['KeyD']) dir.x += 1;
+            dir.applyQuaternion(player.quaternion).normalize();
+            player.position.addScaledVector(dir, 0.48);
 
-            // ZIPLAMA & YERÇEKİMİ
-            if(keys['Space'] && !isJumping) { velocityY = 0.55; isJumping = true; }
-            player.position.y += velocityY;
-            velocityY -= 0.022;
+            if(keys['Space'] && !isJumping) { velocityY = 0.52; isJumping = true; }
+            player.position.y += velocityY; velocityY -= 0.022;
 
-            // KOLİZYON & ENGEL MEKANİKLERİ
             platforms.forEach(p => {
-                const pBox = new THREE.Box3().setFromObject(p.mesh);
-                const playerBox = new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1, 4, 1));
-                
-                if(playerBox.intersectsBox(pBox)) {
-                    // Üstüne basma kontrolü
+                const b = new THREE.Box3().setFromObject(p.mesh);
+                if(new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1.2, 4, 1.2)).intersectsBox(b)) {
                     if(velocityY <= 0 && player.position.y > p.mesh.position.y) {
-                        player.position.y = p.mesh.position.y + 2.8;
-                        velocityY = 0; isJumping = false;
-
-                        if(p.type === 'checkpoint') {
-                            if(checkpoint.y < p.mesh.position.y) {
-                                checkpoint.copy(p.mesh.position).y += 5;
-                                document.getElementById('cp-msg').style.display = 'block';
-                                setTimeout(() => document.getElementById('cp-msg').style.display='none', 2000);
-                            }
-                        }
+                        player.position.y = p.mesh.position.y + 3; velocityY = 0; isJumping = false;
+                        if(p.type==='checkpoint' && checkpoint.y < p.mesh.position.y) checkpoint.set(p.mesh.position.x, p.mesh.position.y+5, p.mesh.position.z);
                     }
-
-                    // Özel Platformlar
-                    if(p.type === 'speed') player.position.addScaledVector(moveDir, 0.8);
-                    if(p.type === 'jump') { velocityY = 0.9; isJumping = true; }
-                    if(p.type === 'vanish') setTimeout(() => p.mesh.visible = false, 500);
-                    if(p.type === 'spike' && player.position.y < p.mesh.position.y + 3) player.position.copy(checkpoint);
+                    if(p.type==='speed') player.position.addScaledVector(dir, 0.7);
+                    if(p.type==='jump') { velocityY = 0.85; isJumping = true; }
+                    if(p.type==='vanish') setTimeout(() => p.mesh.visible = false, 500);
+                    if(p.type==='spike' && player.position.y < p.mesh.position.y + 3) player.position.copy(checkpoint);
                 }
-                if(p.type === 'moving') p.mesh.position.x = p.ox + Math.sin(time * 2) * 20;
+                if(p.type==='moving') p.mesh.position.x = p.ox + Math.sin(Date.now()*0.0015)*20;
             });
 
-            // HAREKETLİ ENGELLER
-            obstacles.forEach(o => {
-                if(o.t === 'rotate') o.m.rotation.y += 0.05;
-                if(o.t === 'laser') o.m.position.y = o.originY + Math.sin(time * 4) * 3;
-                
-                const oBox = new THREE.Box3().setFromObject(o.m);
-                if(new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1,2,1)).intersectsBox(oBox)) {
-                    player.position.copy(checkpoint);
-                }
-            });
-
-            // DÜŞME KONTROLÜ
             if(player.position.y < -50) player.position.copy(checkpoint);
-
-            // KAMERA TAKİBİ (SMOOTH)
-            const camOffset = new THREE.Vector3(0, 12, 30).applyQuaternion(player.quaternion);
-            camera.position.lerp(player.position.clone().add(camOffset), 0.1);
+            camera.position.lerp(player.position.clone().add(new THREE.Vector3(0, 12, 28).applyQuaternion(player.quaternion)), 0.1);
             camera.lookAt(player.position.clone().add(new THREE.Vector3(0, 3, 0)));
-
             document.getElementById('h-val').innerText = Math.floor(player.position.y);
             renderer.render(scene, camera);
         }
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
     </script>
 </body>
 </html>
