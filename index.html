@@ -3,34 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Skyline: Extreme Multi w/ Music</title>
+    <title>Skyline: Mobile Fixed</title>
     <style>
         body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Segoe UI', sans-serif; touch-action: none; }
         #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; text-align: center; color: white; overflow-y: auto; }
-        #char-preview { width: 140px; height: 140px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 3px solid #00f2fe; margin: 10px; }
-        #ui { position: absolute; top: 20px; left: 20px; color: #fff; z-index: 50; pointer-events: none; text-shadow: 2px 2px 4px #000; }
-        #audio-controls { position: absolute; top: 20px; right: 20px; z-index: 160; display: none; }
-        .audio-btn { background: rgba(0,0,0,0.5); color: white; border: 1px solid white; padding: 10px; border-radius: 50%; cursor: pointer; font-size: 20px; }
-        #mobile-ui { position: absolute; bottom: 30px; width: 100%; display: none; justify-content: space-between; padding: 0 40px; box-sizing: border-box; z-index: 150; pointer-events: none; }
+        #char-preview { width: 130px; height: 130px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 2px solid #00f2fe; margin: 10px; }
+        #ui { position: absolute; top: 15px; left: 15px; color: #fff; z-index: 50; pointer-events: none; text-shadow: 2px 2px 4px #000; font-size: 14px; }
+        #audio-controls { position: absolute; top: 15px; right: 15px; z-index: 160; }
+        .audio-btn { background: rgba(0,0,0,0.5); color: white; border: 1px solid white; padding: 8px; border-radius: 50%; cursor: pointer; }
+        #mobile-ui { position: absolute; bottom: 30px; width: 100%; display: none; justify-content: space-between; padding: 0 30px; box-sizing: border-box; z-index: 150; pointer-events: none; }
         .m-zone { pointer-events: auto; display: flex; flex-direction: column; align-items: center; }
-        .m-btn { width: 65px; height: 65px; background: rgba(255,255,255,0.2); border: 2px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; margin: 5px; }
-        .btn { padding: 12px 30px; font-size: 18px; cursor: pointer; border-radius: 30px; background: #FF5722; color: white; border: none; font-weight: bold; margin-top: 10px; box-shadow: 0 5px 15px rgba(255,87,34,0.4); }
-        .cos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 5px; font-size: 13px; }
-        input[type="text"] { padding: 8px; border-radius: 8px; border: none; width: 200px; margin: 5px; text-align: center; }
+        .m-btn { width: 60px; height: 60px; background: rgba(255,255,255,0.25); border: 2px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; margin: 4px; -webkit-user-select: none; }
+        .btn { padding: 12px 25px; font-size: 18px; cursor: pointer; border-radius: 30px; background: #FF5722; color: white; border: none; font-weight: bold; margin-top: 10px; }
+        .cos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 5px; font-size: 12px; }
+        input[type="text"] { padding: 8px; border-radius: 8px; border: none; width: 180px; margin: 4px; text-align: center; }
     </style>
 </head>
 <body>
 
-    <audio id="bg-music" loop>
-        <source src="sarki.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="bg-music" loop><source src="sarki.mp3" type="audio/mpeg"></audio>
 
-    <div id="audio-controls">
-        <button class="audio-btn" onclick="toggleMusic()">🎵</button>
-    </div>
+    <div id="audio-controls"><button class="audio-btn" onclick="toggleMusic()">🎵</button></div>
 
     <div id="overlay">
-        <h1 style="color:#00f2fe; margin:0;">SKYLINE: EXTREME MUSIC</h1>
+        <h2 style="color:#00f2fe; margin:0;">SKYLINE: MOBILE FIXED</h2>
         <div id="char-preview"></div>
         <input type="text" id="username" placeholder="ADINIZ">
         <input type="text" id="room-input" placeholder="ODA KODU">
@@ -40,22 +36,27 @@
             <div>Kulaklık <input type="checkbox" id="c-phones" onchange="updatePreview()"></div>
             <div>Şapka <input type="checkbox" id="c-hat" onchange="updatePreview()"></div>
         </div>
-        <input type="range" id="skin-hue" min="0" max="360" value="180" oninput="updatePreview()" style="width:180px;">
+        <input type="range" id="skin-hue" min="0" max="360" value="180" oninput="updatePreview()" style="width:150px;">
         <br>
-        <button class="btn" onclick="loginAndStart()">BAŞLA & ÇAL</button>
+        <button class="btn" onclick="loginAndStart()">BAŞLA</button>
     </div>
 
     <div id="ui">
-        <h3>YÜKSEKLİK: <span id="h-val">0</span>m</h3>
-        <p>ODA: <span id="room-id">-</span></p>
+        YÜKSEKLİK: <span id="h-val">0</span>m | ODA: <span id="room-id">-</span>
     </div>
 
     <div id="mobile-ui">
         <div class="m-zone">
             <div class="m-btn" onpointerdown="keys['KeyW']=true" onpointerup="keys['KeyW']=false">↑</div>
-            <div style="display:flex;"><div class="m-btn" onpointerdown="keys['KeyA']=true" onpointerup="keys['KeyA']=false">←</div><div class="m-btn" onpointerdown="keys['KeyS']=true" onpointerup="keys['KeyS']=false">↓</div><div class="m-btn" onpointerdown="keys['KeyD']=true" onpointerup="keys['KeyD']=false">→</div></div>
+            <div style="display:flex;">
+                <div class="m-btn" onpointerdown="keys['KeyA']=true" onpointerup="keys['KeyA']=false">←</div>
+                <div class="m-btn" onpointerdown="keys['KeyS']=true" onpointerup="keys['KeyS']=false">↓</div>
+                <div class="m-btn" onpointerdown="keys['KeyD']=true" onpointerup="keys['KeyD']=false">→</div>
+            </div>
         </div>
-        <div class="m-zone"><div class="m-btn" style="background:#4CAF50; width: 85px; height: 85px;" onpointerdown="keys['Space']=true" onpointerup="keys['Space']=false">ZIP</div></div>
+        <div class="m-zone">
+            <div class="m-btn" style="background:#4CAF50; width: 80px; height: 80px;" onpointerdown="keys['Space']=true" onpointerup="keys['Space']=false">ZIP</div>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -73,17 +74,15 @@
         let yaw = 0, pitch = -0.3, checkpoint = new THREE.Vector3();
         let moveSpeed = 0.45, isGameStarted = false, myId, roomId, otherPlayers = {};
 
-        // MÜZİK KONTROLÜ
-        function toggleMusic() {
-            const music = document.getElementById('bg-music');
-            if(music.paused) music.play(); else music.pause();
-        }
+        // MOBİL DÖNDÜRME DEĞİŞKENLERİ
+        let touchX = 0, isTouching = false;
 
-        // PREVIEW
+        function toggleMusic() { const m = document.getElementById('bg-music'); if(m.paused) m.play(); else m.pause(); }
+
         let preScene, preCam, preRen, preModel;
         function initPreview() {
             preScene = new THREE.Scene(); preCam = new THREE.PerspectiveCamera(50, 1, 0.1, 10); preCam.position.set(0, 0.5, 4.5);
-            preRen = new THREE.WebGLRenderer({ antialias: true, alpha: true }); preRen.setSize(140, 140);
+            preRen = new THREE.WebGLRenderer({ antialias: true, alpha: true }); preRen.setSize(130, 130);
             document.getElementById('char-preview').appendChild(preRen.domElement);
             preScene.add(new THREE.AmbientLight(0xffffff, 1));
             updatePreview();
@@ -94,20 +93,20 @@
             let g = new THREE.Group();
             let m = new THREE.MeshStandardMaterial({color: new THREE.Color(`hsl(${cfg.hue}, 70%, 50%)`)});
             let s = new THREE.MeshStandardMaterial({color: 0xffdbac});
-            let torso = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.4, 0.5), m); torso.name="torso";
-            let head = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), s); head.position.y = 1.05;
-            let legL = new THREE.Mesh(new THREE.BoxGeometry(0.35, 1.1, 0.35), s); legL.position.set(-0.3, -1.1, 0); legL.name="legL";
-            let legR = legL.clone(); legR.position.x = 0.3; legR.name="legR";
+            let torso = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.3, 0.5), m); torso.name="torso";
+            let head = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.55, 0.55), s); head.position.y = 1.0;
+            let legL = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1.0, 0.3), s); legL.position.set(-0.25, -1.1, 0); legL.name="legL";
+            let legR = legL.clone(); legR.position.x = 0.25; legR.name="legR";
             g.add(torso, head, legL, legR);
 
-            if(cfg.glasses) { let gl = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.1, 0.1), new THREE.MeshBasicMaterial({color:0})); gl.position.set(0, 1.05, 0.31); g.add(gl); }
-            if(cfg.bag) { let bg = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.9, 0.35), new THREE.MeshStandardMaterial({color:0x222222})); bg.position.set(0, 0.1, -0.45); g.add(bg); }
-            if(cfg.phones) { let ph = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.04, 8, 16), new THREE.MeshBasicMaterial({color:0})); ph.rotation.x=Math.PI/2; ph.position.y=1.2; g.add(ph); }
-            if(cfg.hat) { let ht = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, 0.2, 16), new THREE.MeshStandardMaterial({color:0x333333})); ht.position.y=1.4; g.add(ht); }
+            if(cfg.glasses) { let gl = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.1, 0.1), new THREE.MeshBasicMaterial({color:0})); gl.position.set(0, 1, 0.28); g.add(gl); }
+            if(cfg.bag) { let bg = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.8, 0.3), new THREE.MeshStandardMaterial({color:0x222222})); bg.position.set(0, 0.1, -0.42); g.add(bg); }
+            if(cfg.phones) { let ph = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.04, 8, 16), new THREE.MeshBasicMaterial({color:0})); ph.rotation.x=Math.PI/2; ph.position.y=1.1; g.add(ph); }
+            if(cfg.hat) { let ht = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.5, 0.15, 16), new THREE.MeshStandardMaterial({color:0x333333})); ht.position.y=1.3; g.add(ht); }
 
-            let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d'); canvas.width = 256; canvas.height = 64;
-            ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(0,0,256,64); ctx.fillStyle = 'white'; ctx.font = 'bold 36px Arial'; ctx.textAlign = 'center'; ctx.fillText(cfg.name || "Siz", 128, 45);
-            let sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: new THREE.CanvasTexture(canvas)})); sprite.position.y = 2.2; sprite.scale.set(2, 0.5, 1); g.add(sprite);
+            let canvas = document.createElement('canvas'); let ctx = canvas.getContext('2d'); canvas.width = 128; canvas.height = 32;
+            ctx.fillStyle = 'white'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center'; ctx.fillText(cfg.name || "Siz", 64, 24);
+            let sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: new THREE.CanvasTexture(canvas)})); sprite.position.y = 2.0; sprite.scale.set(2, 0.5, 1); g.add(sprite);
             return g;
         }
 
@@ -118,16 +117,13 @@
         }
 
         function loginAndStart() {
-            const music = document.getElementById('bg-music');
-            music.play().catch(() => console.log("Müzik için etkileşim lazım."));
-            document.getElementById('audio-controls').style.display = 'block';
-
+            document.getElementById('bg-music').play().catch(()=>{});
+            document.getElementById('audio-controls').style.display='block';
             const provider = new firebase.auth.GoogleAuthProvider();
             firebase.auth().signInWithPopup(provider).then(res => {
                 myId = res.user.uid; roomId = document.getElementById('room-input').value || "oda1";
                 const cfg = { name: document.getElementById('username').value || res.user.displayName, hue: document.getElementById('skin-hue').value, glasses: document.getElementById('c-glasses').checked, bag: document.getElementById('c-bag').checked, phones: document.getElementById('c-phones').checked, hat: document.getElementById('c-hat').checked };
                 document.getElementById('overlay').style.display = 'none';
-                document.getElementById('room-id').innerText = roomId;
                 if(/Android|iPhone/i.test(navigator.userAgent)) document.getElementById('mobile-ui').style.display = 'flex';
                 isGameStarted = true; initGame(cfg);
             });
@@ -150,39 +146,45 @@
                     otherPlayers[id].position.lerp(new THREE.Vector3(data[id].x, data[id].y, data[id].z), 0.2);
                     otherPlayers[id].rotation.y = data[id].ry;
                 }
-                for(let id in otherPlayers) { if(!data || !data[id]) { scene.remove(otherPlayers[id]); delete otherPlayers[id]; } }
             });
 
-            const radius = 100;
-            const obstacleTypes = ['spike','hammer','vanish','wind','speed','bounce','moving','rotate','lava','fake'];
-            for(let i = 0; i < 500; i++) {
-                let angle = i * 0.23, x = Math.cos(angle)*radius, y = i*4.6, z = Math.sin(angle)*radius;
-                let type = (i===0)?'checkpoint':(i%15===0?'checkpoint': obstacleTypes[Math.floor(Math.random()*obstacleTypes.length)]);
-                let color = new THREE.Color().setHSL(i/50, 0.8, 0.5);
-                if(i===0) { checkpoint.set(x, y+5, z); player.position.copy(checkpoint); }
-                createPlatform(x, y, z, 24, color, type);
-            }
+            // MOBİL DÖNDÜRME SİSTEMİ (TOUCH)
+            window.addEventListener('touchstart', e => { if(e.touches[0].clientX > window.innerWidth/2) { isTouching = true; touchX = e.touches[0].clientX; } }, {passive: false});
+            window.addEventListener('touchmove', e => {
+                if(isTouching) {
+                    let nowX = e.touches[0].clientX;
+                    let deltaX = nowX - touchX;
+                    yaw -= deltaX * 0.007;
+                    touchX = nowX;
+                }
+            }, {passive: false});
+            window.addEventListener('touchend', () => isTouching = false);
 
+            // MOUSE DÖNDÜRME
+            document.addEventListener('mousemove', e => { if(document.pointerLockElement) yaw -= e.movementX*0.003; });
             document.addEventListener('mousedown', () => { if(isGameStarted) document.body.requestPointerLock(); });
-            document.addEventListener('mousemove', e => { if(document.pointerLockElement) { yaw -= e.movementX*0.0025; pitch = Math.max(-0.6, Math.min(0.2, pitch - e.movementY*0.0025)); } });
             window.addEventListener('keydown', e => keys[e.code] = true); window.addEventListener('keyup', e => keys[e.code] = false);
-            setInterval(() => { if(isGameStarted) db.ref('rooms/'+roomId+'/players/'+myId).set({ x: player.position.x, y: player.position.y, z: player.position.z, ry: player.rotation.y, config: cfg }); }, 50);
+
+            // Parkur
+            const radius = 100;
+            const obs = ['spike','hammer','vanish','wind','speed','bounce','moving','rotate','lava','fake'];
+            for(let i = 0; i < 500; i++) {
+                let a = i * 0.23, x = Math.cos(a)*radius, y = i*4.6, z = Math.sin(a)*radius;
+                let type = (i===0)?'checkpoint':(i%15===0?'checkpoint': obs[Math.floor(Math.random()*obs.length)]);
+                if(i===0) { checkpoint.set(x, y+5, z); player.position.copy(checkpoint); }
+                createPlatform(x, y, z, 24, new THREE.Color().setHSL(i/50, 0.8, 0.5), type);
+            }
+            setInterval(() => { if(isGameStarted) db.ref('rooms/'+roomId+'/players/'+myId).set({ x: player.position.x, y: player.position.y, z: player.position.z, ry: player.rotation.y, config: cfg }); }, 60);
             animate();
         }
 
-        function createPlatform(x, y, z, size, color, type) {
-            let m = new THREE.Mesh(new THREE.BoxGeometry(size, 2, size), new THREE.MeshStandardMaterial({color: (type==='checkpoint'?0x00FF00:color), transparent: type==='fake', opacity: type==='fake'?0.7:1}));
+        function createPlatform(x, y, z, s, c, t) {
+            let m = new THREE.Mesh(new THREE.BoxGeometry(s, 2, s), new THREE.MeshStandardMaterial({color: (t==='checkpoint'?0x00FF00:c), transparent: t==='fake', opacity: t==='fake'?0.6:1}));
             m.position.set(x, y, z); scene.add(m);
-            if(type==='spike') {
-                for(let j=0;j<4;j++){ let s = new THREE.Mesh(new THREE.ConeGeometry(0.8, 2.5, 8), new THREE.MeshStandardMaterial({color:0xff0000})); s.position.set((Math.random()-0.5)*15, 2, (Math.random()-0.5)*15); m.add(s); }
-            } else if(type==='hammer') {
-                let hG = new THREE.Group(); let head = new THREE.Mesh(new THREE.BoxGeometry(6,6,6), new THREE.MeshStandardMaterial({color:0x333333})); head.position.y=-12; hG.add(head); hG.position.set(x,y+12,z); scene.add(hG); obstacles.push({m:hG, t:'hammer'});
-            } else if(type==='rotate') {
-                let bar = new THREE.Mesh(new THREE.BoxGeometry(size, 1, 1), new THREE.MeshStandardMaterial({color:0x000000})); bar.position.y=2; m.add(bar); obstacles.push({m:bar, t:'rotate'});
-            } else if(type==='lava') {
-                let lava = new THREE.Mesh(new THREE.SphereGeometry(1.5), new THREE.MeshBasicMaterial({color:0xff4400})); obstacles.push({m:lava, t:'lava', ox:x, oy:y, oz:z}); scene.add(lava);
-            }
-            platforms.push({mesh: m, type, ox: x, oy: y, oz: z});
+            if(t==='spike') { for(let j=0;j<3;j++){ let sp = new THREE.Mesh(new THREE.ConeGeometry(0.7, 2, 8), new THREE.MeshStandardMaterial({color:0xff0000})); sp.position.set((Math.random()-0.5)*15, 1.5, (Math.random()-0.5)*15); m.add(sp); } }
+            else if(t==='hammer') { let hG = new THREE.Group(); let head = new THREE.Mesh(new THREE.BoxGeometry(5,5,5), new THREE.MeshStandardMaterial({color:0x333333})); head.position.y=-10; hG.add(head); hG.position.set(x,y+10,z); scene.add(hG); obstacles.push({m:hG, t:'hammer'}); }
+            else if(t==='rotate') { let bar = new THREE.Mesh(new THREE.BoxGeometry(s, 1, 1), new THREE.MeshStandardMaterial({color:0x000000})); bar.position.y=1.5; m.add(bar); obstacles.push({m:bar, t:'rotate'}); }
+            platforms.push({mesh: m, type: t, ox: x, oy: y, oz: z});
         }
 
         function animate() {
@@ -207,27 +209,25 @@
                 let b = new THREE.Box3().setFromObject(p.mesh);
                 let pBox = new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1, 4, 1));
                 if(pBox.intersectsBox(b)) {
-                    if(p.type==='spike' && player.position.y < p.mesh.position.y+2.8) player.position.copy(checkpoint);
-                    if(p.type==='vanish') setTimeout(() => p.mesh.visible = false, 800);
+                    if(p.type==='spike' && player.position.y < p.mesh.position.y+2.5) player.position.copy(checkpoint);
+                    if(p.type==='vanish') setTimeout(() => p.mesh.visible = false, 700);
                     if(p.type==='bounce') velocityY = 0.8;
-                    if(p.type==='speed') player.position.addScaledVector(dir, 0.8);
-                    if(p.type==='wind') player.position.x += 0.4;
+                    if(p.type==='speed') player.position.addScaledVector(dir, 0.7);
                     if(p.type==='checkpoint' && checkpoint.y < p.mesh.position.y) checkpoint.copy(p.mesh.position).y += 5;
                     if(velocityY <= 0 && player.position.y > p.mesh.position.y && p.type!=='fake') { player.position.y = p.mesh.position.y+2.8; velocityY=0; isJumping=false; }
                 }
-                if(p.type==='moving') p.mesh.position.x = p.ox + Math.sin(time*2)*20;
+                if(p.type==='moving') p.mesh.position.x = p.ox + Math.sin(time*2)*15;
             });
 
             obstacles.forEach(o => {
                 if(o.t==='hammer') o.m.rotation.z = Math.sin(time*3)*1.5;
                 if(o.t==='rotate') o.m.rotation.y += 0.05;
-                if(o.t==='lava') { o.m.position.set(o.ox+(Math.random()-0.5)*10, o.oy+Math.abs(Math.sin(time*5)*15), o.oz+(Math.random()-0.5)*10); }
                 if(new THREE.Box3().setFromObject(o.m).intersectsBox(new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1.5,4,1.5)))) player.position.copy(checkpoint);
             });
 
             if(player.position.y < -50) player.position.copy(checkpoint);
-            camera.position.lerp(player.position.clone().add(new THREE.Vector3(0, 12, 30).applyQuaternion(player.quaternion)), 0.1);
-            camera.lookAt(player.position.clone().add(new THREE.Vector3(0, 3, 0)));
+            camera.position.lerp(player.position.clone().add(new THREE.Vector3(0, 10, 25).applyQuaternion(player.quaternion)), 0.1);
+            camera.lookAt(player.position.clone().add(new THREE.Vector3(0, 2, 0)));
             document.getElementById('h-val').innerText = Math.floor(player.position.y);
             renderer.render(scene, camera);
         }
