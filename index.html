@@ -2,270 +2,34 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>3D Parkur - Lüks Versiyon</title>
-    <style>
-        body { margin: 0; overflow: hidden; background-color: #87CEEB; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        #game-info {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            text-align: center;
-            text-shadow: 2px 2px 4px #000000;
-            pointer-events: none;
-            z-index: 10;
-        }
-        h1 { margin: 0; font-size: 40px; text-transform: uppercase; letter-spacing: 2px; }
-        p { font-size: 20px; font-weight: bold; }
-        #game-over {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.9);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            z-index: 20;
-        }
-        button {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-        button:hover { transform: scale(1.05); background: #ff6b81; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Parkur 3D</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div id="game-info">
-        <h1>SKY RUNNER 3D</h1>
-        <p>Skor: <span id="score">0</span></p>
-        <p style="font-size: 14px; opacity: 0.8;">ZIPLAMAK İÇİN BOŞLUK (SPACE) TUŞUNA BAS</p>
+    
+    <div id="ui-layer">
+        <div id="score-board">SKOR: <span id="score">0</span></div>
+        <div id="start-screen">
+            <h1>FASULYE KOŞUSU</h1>
+            <p>Başlamak için BOŞLUK (SPACE) tuşuna bas</p>
+        </div>
+        <div id="game-over-screen" class="hidden">
+            <h1>ELENDİN!</h1>
+            <button onclick="window.location.reload()">TEKRAR DENE</button>
+        </div>
     </div>
 
-    <div id="game-over">
-        <h2 style="color: #2f3542; font-size: 30px;">ELENDİN!</h2>
-        <p style="color: #57606f;">Son Skorun: <span id="final-score">0</span></p>
-        <button onclick="resetGame()">Tekrar Oyna</button>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-    <script>
-        // --- OYUN DEĞİŞKENLERİ ---
-        let scene, camera, renderer;
-        let player;
-        let ground;
-        let obstacles = [];
-        let score = 0;
-        let gameActive = true;
-        let frameId;
-        let spawnRate = 100; // Engel çıkma sıklığı
-        let frameCount = 0;
-        let gameSpeed = 0.5;
-
-        // Fizik Değişkenleri
-        let playerVelocityY = 0;
-        const gravity = -0.02;
-        const jumpPower = 0.6;
-        let isJumping = false;
-        
-        // --- BAŞLANGIÇ AYARLARI ---
-        function init() {
-            // Sahne Oluşturma
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x87CEEB); // Gökyüzü mavisi
-            scene.fog = new THREE.Fog(0x87CEEB, 10, 50); // Sis efekti (derinlik için)
-
-            // Kamera
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 7, 12); // Kamerayı yukarı ve geriye al
-            camera.lookAt(0, 0, 0);
-
-            // Render Motoru (Görüntü oluşturucu)
-            renderer = new THREE.WebGLRenderer({ antialias: true }); // Antialias kenarları yumuşatır
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.shadowMap.enabled = true; // Gölgeleri aç
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            document.body.appendChild(renderer.domElement);
-
-            // Işıklandırma (Lüks görünüm için çok önemli)
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); // Genel aydınlatma
-            scene.add(ambientLight);
-
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8); // Güneş ışığı
-            dirLight.position.set(10, 20, 10);
-            dirLight.castShadow = true;
-            dirLight.shadow.mapSize.width = 2048; // Gölge kalitesi
-            dirLight.shadow.mapSize.height = 2048;
-            dirLight.shadow.camera.near = 0.5;
-            dirLight.shadow.camera.far = 50;
-            scene.add(dirLight);
-
-            // --- OYUNCU (KÜP) ---
-            const playerGeometry = new THREE.BoxGeometry(1, 1, 1);
-            // Stumble Guys tarzı parlak materyal
-            const playerMaterial = new THREE.MeshPhongMaterial({ 
-                color: 0xFFD700, // Altın sarısı
-                shininess: 100,
-                specular: 0xffffff
-            });
-            player = new THREE.Mesh(playerGeometry, playerMaterial);
-            player.position.y = 0.5; // Yerde başlasın
-            player.castShadow = true;
-            player.receiveShadow = true;
-            scene.add(player);
-
-            // --- ZEMİN ---
-            const groundGeometry = new THREE.BoxGeometry(100, 100, 100); // Sonsuz gibi görünen zemin (aslında büyük bir küp)
-            const groundMaterial = new THREE.MeshPhongMaterial({ 
-                color: 0x2ecc71, // Çimen yeşili
-            });
-            ground = new THREE.Mesh(groundGeometry, groundMaterial);
-            ground.position.y = -50; // Yüzey 0 noktasında olsun diye aşağı çekiyoruz
-            ground.position.z = -10;
-            ground.receiveShadow = true;
-            scene.add(ground);
-
-            // --- KONTROLLER ---
-            document.addEventListener('keydown', (event) => {
-                if (event.code === 'Space' && !isJumping && gameActive) {
-                    playerVelocityY = jumpPower;
-                    isJumping = true;
-                    // Zıplarken şekil değiştirme efekti (Basit bir rotasyon)
-                    player.rotation.x -= 0.5; 
-                }
-            });
-
-            // Pencere boyutu değişirse
-            window.addEventListener('resize', onWindowResize, false);
-
-            animate();
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.150.1/build/three.module.js", 
+          "three/addons/": "https://unpkg.com/three@0.150.1/examples/jsm/"
         }
-
-        // --- OYUN DÖNGÜSÜ ---
-        function animate() {
-            if (!gameActive) return;
-
-            frameId = requestAnimationFrame(animate);
-            frameCount++;
-
-            // 1. OYUNCU FİZİĞİ
-            player.position.y += playerVelocityY;
-            playerVelocityY += gravity;
-
-            // Zemin çarpışması
-            if (player.position.y <= 0.5) {
-                player.position.y = 0.5;
-                playerVelocityY = 0;
-                isJumping = false;
-                // Yerdeyken oyuncuyu düzelt
-                player.rotation.x = 0; 
-                player.rotation.z = 0;
-            } else {
-                // Havadayken takla atma efekti
-                player.rotation.x -= 0.05;
-            }
-
-            // 2. ENGEL OLUŞTURMA
-            if (frameCount % spawnRate === 0) {
-                createObstacle();
-                // Oyun ilerledikçe hızlansın ve sıklaşsın
-                if (spawnRate > 40) spawnRate -= 1;
-                gameSpeed += 0.001;
-            }
-
-            // 3. ENGELLERİ HAREKET ETTİRME VE ÇARPIŞMA
-            for (let i = obstacles.length - 1; i >= 0; i--) {
-                let obs = obstacles[i];
-                obs.position.z += gameSpeed; // Kameraya doğru getir
-
-                // Çarpışma Kontrolü (Basit kutu çarpışması)
-                // Oyuncu Z: 0, Engel Z: obs.position.z
-                // Oyuncu Y: player.position.y, Engel Y: 0.5 ile 1.5 arası (boyuta göre)
-                
-                // Z ekseninde yakın mı?
-                if (obs.position.z > -0.8 && obs.position.z < 0.8) {
-                    // Y ekseninde çarpıyor mu? (Zıplamadıysa)
-                    // Engel yüksekliğini ve oyuncu altını hesapla
-                    if (player.position.y < 1.2) { // Basitçe: Oyuncu yeterince yüksekte değilse
-                        gameOver();
-                    }
-                }
-
-                // Ekrandan çıktıysa sil
-                if (obs.position.z > 5) {
-                    scene.remove(obs);
-                    obstacles.splice(i, 1);
-                    score += 10;
-                    document.getElementById('score').innerText = score;
-                }
-            }
-            
-            // Koşu efekti için zemin deseni kayıyormuş gibi hissettir (opsiyonel, burada ışıkla yapıyoruz)
-        }
-
-        function createObstacle() {
-            // Rastgele renk
-            const colors = [0xff4757, 0x5352ed, 0xffa502, 0xff6348];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
-
-            const geometry = new THREE.BoxGeometry(1, 1, 1);
-            const material = new THREE.MeshPhongMaterial({ color: randomColor });
-            const obstacle = new THREE.Mesh(geometry, material);
-            
-            obstacle.position.set(0, 0.5, -40); // Uzakta başlat
-            obstacle.castShadow = true;
-            obstacle.receiveShadow = true;
-            
-            scene.add(obstacle);
-            obstacles.push(obstacle);
-        }
-
-        function gameOver() {
-            gameActive = false;
-            cancelAnimationFrame(frameId);
-            document.getElementById('final-score').innerText = score;
-            document.getElementById('game-over').style.display = 'block';
-        }
-
-        function resetGame() {
-            // Değişkenleri sıfırla
-            score = 0;
-            document.getElementById('score').innerText = score;
-            document.getElementById('game-over').style.display = 'none';
-            gameSpeed = 0.4;
-            spawnRate = 100;
-            frameCount = 0;
-            gameActive = true;
-
-            // Sahnedeki engelleri temizle
-            for (let obs of obstacles) {
-                scene.remove(obs);
-            }
-            obstacles = [];
-
-            animate();
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        // Başlat
-        init();
-
+      }
     </script>
+
+    <script type="module" src="./game.js"></script>
 </body>
 </html>
