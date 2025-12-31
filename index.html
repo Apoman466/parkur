@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SKYLINE: Survivor Multi</title>
+    <title>SKYLINE: ULTRA EDITION 2026</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; touch-action: none; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; text-align: center; }
-        .menu-box { background: white; padding: 40px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 4px solid #4CAF50; }
-        #ui { position: absolute; top: 20px; left: 20px; color: #333; z-index: 50; pointer-events: none; font-weight: bold; font-size: 18px; text-shadow: 1px 1px 0px white; }
-        #mobile-ui { position: absolute; bottom: 30px; width: 100%; display: none; justify-content: space-between; padding: 0 30px; box-sizing: border-box; z-index: 150; pointer-events: none; }
-        .m-btn { width: 65px; height: 65px; background: rgba(255,255,255,0.9); border: 2px solid #4CAF50; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #4CAF50; margin: 4px; pointer-events: auto; user-select: none; }
-        .btn-start { padding: 15px 45px; font-size: 20px; cursor: pointer; border-radius: 50px; background: #4CAF50; color: white; border: none; font-weight: bold; margin-top: 15px; box-shadow: 0 6px 0 #2E7D32; }
-        .btn-start:active { transform: translateY(4px); box-shadow: 0 2px 0 #2E7D32; }
-        input { padding: 12px; border-radius: 10px; border: 2px solid #ddd; width: 220px; margin: 8px; text-align: center; font-size: 16px; }
-        #connection-status { color: red; font-size: 12px; margin-top: 10px; display: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Orbitron', sans-serif; touch-action: none; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, #1a1a1a 0%, #000 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; color: #00f2fe; }
+        .panel { background: rgba(0,0,0,0.9); padding: 40px; border: 3px solid #00f2fe; border-radius: 30px; box-shadow: 0 0 50px #00f2fe; text-align: center; max-width: 450px; }
+        #ui { position: absolute; top: 20px; left: 20px; color: #00f2fe; z-index: 50; pointer-events: none; text-shadow: 0 0 10px #00f2fe; font-size: 20px; }
+        #leaderboard { position: absolute; top: 20px; right: 20px; color: #ff00ff; z-index: 50; text-align: right; font-size: 14px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; }
+        #mobile-ui { position: absolute; bottom: 40px; width: 100%; display: none; justify-content: space-between; padding: 0 50px; box-sizing: border-box; z-index: 150; pointer-events: none; }
+        .m-btn { width: 75px; height: 75px; background: rgba(0,242,254,0.1); border: 2px solid #00f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 25px; color: white; margin: 5px; pointer-events: auto; }
+        .btn-ultra { padding: 18px 50px; font-size: 22px; cursor: pointer; border-radius: 50px; background: #00f2fe; color: #000; border: none; font-weight: bold; margin-top: 25px; transition: 0.3s; box-shadow: 0 0 20px #00f2fe; }
+        .btn-ultra:hover { transform: scale(1.1); box-shadow: 0 0 40px #00f2fe; }
+        input { padding: 15px; border-radius: 15px; border: 1px solid #00f2fe; background: #111; color: #fff; width: 85%; margin: 10px; text-align: center; font-family: 'Orbitron'; }
     </style>
 </head>
 <body>
@@ -22,33 +23,36 @@
     <audio id="bg-music" loop><source src="sarki.mp3" type="audio/mpeg"></audio>
 
     <div id="overlay">
-        <div class="menu-box">
-            <h1 style="color:#4CAF50; margin:0; font-size: 35px;">SKYLINE 🚀</h1>
-            <p style="color:#666;">Mülakat & Multiplayer Özel</p>
-            <input type="text" id="username" placeholder="PİLOT ADI">
-            <input type="text" id="room-input" placeholder="ODA KODU (Aynı kodu girin)">
-            <br>
-            <button class="btn-start" onclick="loginAndStart()">SİSTEME GİR</button>
-            <div id="connection-status">Veritabanına bağlanılamıyor! Lütfen Rules'ı kontrol et.</div>
+        <div class="panel">
+            <h1 style="margin:0; letter-spacing: 10px; text-shadow: 0 0 20px #00f2fe;">SKYLINE</h1>
+            <p style="color: #ff00ff; font-size: 14px;">ULTRA MULTIPLAYER ENGINE v4.0</p>
+            <input type="text" id="username" placeholder="KAHRAMAN ADI">
+            <input type="text" id="room-input" placeholder="ODA KODU">
+            <button class="btn-ultra" onclick="loginAndStart()">SİSTEMİ BAŞLAT</button>
         </div>
     </div>
 
     <div id="ui">
-        YÜKSEKLİK: <span id="h-val" style="color:#e91e63;">0</span>m | 
-        ODA: <span id="room-id" style="color:#4CAF50;">-</span>
+        ALTITUDE: <span id="h-val">0</span>m<br>
+        <span style="font-size: 14px; color: #fff;">SESSION: <span id="room-id">-</span></span>
+    </div>
+
+    <div id="leaderboard">
+        TOP SURVIVORS<br>
+        <div id="lb-list">...</div>
     </div>
 
     <div id="mobile-ui">
         <div style="display: flex; flex-direction: column; align-items: center;">
-            <div class="m-btn" onpointerdown="keys['KeyW']=true" onpointerup="keys['KeyW']=false">↑</div>
+            <div class="m-btn" onpointerdown="keys['KeyW']=true" onpointerup="keys['KeyW']=false">W</div>
             <div style="display:flex;">
-                <div class="m-btn" onpointerdown="keys['KeyA']=true" onpointerup="keys['KeyA']=false">←</div>
-                <div class="m-btn" onpointerdown="keys['KeyS']=true" onpointerup="keys['KeyS']=false">↓</div>
-                <div class="m-btn" onpointerdown="keys['KeyD']=true" onpointerup="keys['KeyD']=false">→</div>
+                <div class="m-btn" onpointerdown="keys['KeyA']=true" onpointerup="keys['KeyA']=false">A</div>
+                <div class="m-btn" onpointerdown="keys['KeyS']=true" onpointerup="keys['KeyS']=false">S</div>
+                <div class="m-btn" onpointerdown="keys['KeyD']=true" onpointerup="keys['KeyD']=false">D</div>
             </div>
         </div>
         <div style="display: flex; align-items: center;">
-            <div class="m-btn" style="width:90px; height:90px; background:#FFC107; color:white; border:none;" onpointerdown="keys['Space']=true" onpointerup="keys['Space']=false">ZIPLA</div>
+            <div class="m-btn" style="width:120px; height:120px; background:rgba(255,0,255,0.2); border-color:#ff00ff;" onpointerdown="keys['Space']=true" onpointerup="keys['Space']=false">JUMP</div>
         </div>
     </div>
 
@@ -57,7 +61,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
-        // --- SENİN GÜNCEL FIREBASE BİLGİLERİN ---
         const firebaseConfig = { 
             apiKey: "AIzaSyD-gQNjOz03WhErBDD24hpJr4q5h30CCGU", 
             databaseURL: "https://ekiple-parkur-default-rtdb.firebaseio.com/", 
@@ -66,113 +69,146 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Bağlantı Kontrolü
-        db.ref(".info/connected").on("value", (snap) => {
-            document.getElementById('connection-status').style.display = snap.val() ? 'none' : 'block';
-        });
-
         let scene, camera, renderer, player, clock = new THREE.Clock();
-        let platforms = [], otherPlayers = {}, keys = {};
+        let platforms = [], obstacles = [], otherPlayers = {}, keys = {};
         let velocityY = 0, isJumping = false, yaw = 0;
         let checkpoint = new THREE.Vector3(0, 10, 0);
-        let myId = "P-" + Math.random().toString(36).substr(2, 4);
+        let myId = "U-" + Math.random().toString(36).substr(2, 5);
         let isGameStarted = false, roomId;
         let touchX = 0, isTouching = false;
 
-        function createPlayer(name, color) {
+        function createUltraHero(name, color, isMe) {
             const group = new THREE.Group();
-            const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.5), new THREE.MeshStandardMaterial({color: color}));
-            const head = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), new THREE.MeshStandardMaterial({color: 0xffdbac}));
-            head.position.y = 1.1;
-            group.add(body, head);
             
+            // Gövde & Jetpack
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.5), new THREE.MeshStandardMaterial({color: color, metalness: 0.9, roughness: 0.1}));
+            group.add(body);
+            
+            const jetpack = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.8, 0.3), new THREE.MeshStandardMaterial({color: 0x333333}));
+            jetpack.position.set(0, 0, -0.4);
+            group.add(jetpack);
+
+            // Kask & Vizör
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), new THREE.MeshStandardMaterial({color: 0x111111}));
+            head.position.y = 1.1;
+            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.2, 0.1), new THREE.MeshBasicMaterial({color: isMe ? 0x00f2fe : 0xff00ff}));
+            visor.position.set(0, 0.1, 0.3);
+            head.add(visor);
+            group.add(head);
+
+            // İsim Paneli
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = 256; canvas.height = 64;
-            ctx.fillStyle = 'black'; ctx.font = 'bold 32px Arial'; ctx.textAlign = 'center';
+            ctx.fillStyle = isMe ? '#00f2fe' : '#ff00ff';
+            ctx.font = 'bold 36px Orbitron';
+            ctx.textAlign = 'center';
             ctx.fillText(name, 128, 45);
             const sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: new THREE.CanvasTexture(canvas)}));
-            sprite.position.y = 2.5; sprite.scale.set(3, 0.75, 1);
+            sprite.position.y = 2.6; sprite.scale.set(3, 0.75, 1);
             group.add(sprite);
+
             return group;
         }
 
         function loginAndStart() {
-            roomId = document.getElementById('room-input').value.trim() || "lobi";
+            roomId = document.getElementById('room-input').value.trim() || "ultra-arena";
             document.getElementById('room-id').innerText = roomId;
             document.getElementById('overlay').style.display = 'none';
             if(/Android|iPhone/i.test(navigator.userAgent)) document.getElementById('mobile-ui').style.display = 'flex';
             document.getElementById('bg-music').play().catch(()=>{});
             isGameStarted = true;
-            initGame(document.getElementById('username').value || "Pilot");
+            initGame(document.getElementById('username').value || "HERO");
         }
 
         function initGame(uName) {
-            scene = new THREE.Scene(); scene.background = new THREE.Color(0x87CEEB);
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000000, 0.0008);
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
             document.body.appendChild(renderer.domElement);
             
-            scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-            const light = new THREE.DirectionalLight(0xffffff, 0.6); light.position.set(10, 20, 10); scene.add(light);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+            const pLight = new THREE.PointLight(0x00f2fe, 2, 50); scene.add(pLight);
 
-            player = createPlayer(uName, 0x4CAF50); scene.add(player);
+            player = createUltraHero(uName, 0x00f2fe, true); scene.add(player);
 
-            // MULTIPLAYER SYNC
+            // MULTIPLAYER & LEADERBOARD SYNC
             const roomRef = db.ref('rooms/' + roomId);
-            roomRef.child(myId).onDisconnect().remove();
+            roomRef.child('players/' + myId).onDisconnect().remove();
 
-            roomRef.on('value', snap => {
+            roomRef.child('players').on('value', snap => {
                 const data = snap.val();
                 if(!data) return;
+                let lbHTML = "";
+                let playersArr = [];
                 for(let id in data) {
+                    playersArr.push(data[id]);
                     if(id === myId) continue;
                     if(!otherPlayers[id]) {
-                        otherPlayers[id] = createPlayer(data[id].name, 0xe91e63);
+                        otherPlayers[id] = createUltraHero(data[id].name, 0xff00ff, false);
                         scene.add(otherPlayers[id]);
                     }
                     otherPlayers[id].position.lerp(new THREE.Vector3(data[id].x, data[id].y, data[id].z), 0.2);
                     otherPlayers[id].rotation.y = data[id].ry;
                 }
+                playersArr.sort((a,b) => b.y - a.y).slice(0,5).forEach((p, i) => {
+                    lbHTML += `${i+1}. ${p.name}: ${Math.floor(p.y)}m<br>`;
+                });
+                document.getElementById('lb-list').innerHTML = lbHTML;
                 for(let id in otherPlayers) { if(!data[id]) { scene.remove(otherPlayers[id]); delete otherPlayers[id]; } }
             });
 
-            // PARKUR VE ENGELLER
-            const types = ['normal','speed','jump','vanish','moving','spike'];
-            for(let i = 0; i < 500; i++) {
-                let a = i * 0.25; 
-                let x = Math.cos(a)*80, y = i*4.5, z = Math.sin(a)*80;
-                let isCP = (i % 12 === 0);
+            // PARKUR SİSTEMİ (12 FARKLI TİP)
+            const obsTypes = ['normal','speed','jump','vanish','moving','spike','rotate','wind','ice','lava','trampoline','fake'];
+            for(let i = 0; i < 600; i++) {
+                let a = i * 0.22; 
+                let x = Math.cos(a)*(100 + Math.sin(i*0.1)*20), y = i*5, z = Math.sin(a)*(100 + Math.sin(i*0.1)*20);
+                let isCP = (i % 15 === 0);
                 if(i===0) { checkpoint.set(x, y+5, z); player.position.copy(checkpoint); }
-                createPlatform(x, y, z, isCP ? 'checkpoint' : types[Math.floor(Math.random()*types.length)], i);
+                createPlatform(x, y, z, isCP ? 'checkpoint' : obsTypes[Math.floor(Math.random()*obsTypes.length)], i);
             }
 
             // KONTROLLER
             window.onkeydown = e => keys[e.code] = true;
             window.onkeyup = e => keys[e.code] = false;
             document.addEventListener('mousedown', () => { if(isGameStarted) document.body.requestPointerLock(); });
-            document.addEventListener('mousemove', e => { if(document.pointerLockElement) yaw -= e.movementX * 0.003; });
-            
+            document.addEventListener('mousemove', e => { if(document.pointerLockElement) yaw -= e.movementX * 0.0025; });
             window.addEventListener('touchstart', e => { if(e.touches[0].clientX > window.innerWidth/2) { isTouching=true; touchX=e.touches[0].clientX; } });
             window.addEventListener('touchmove', e => { if(isTouching){ yaw -= (e.touches[0].clientX - touchX)*0.01; touchX=e.touches[0].clientX; } });
             window.addEventListener('touchend', () => isTouching=false);
 
             setInterval(() => {
-                if(isGameStarted) roomRef.child(myId).set({ x: player.position.x, y: player.position.y, z: player.position.z, ry: player.rotation.y, name: uName });
+                if(isGameStarted) roomRef.child('players/' + myId).set({ x: player.position.x, y: player.position.y, z: player.position.z, ry: player.rotation.y, name: uName });
             }, 50);
 
             animate();
         }
 
         function createPlatform(x, y, z, t, i) {
-            let color = new THREE.Color().setHSL((i%60)/60, 0.7, 0.6);
+            let color = new THREE.Color().setHSL((i%100)/100, 0.8, 0.4);
             if(t==='checkpoint') color = 0x00FF00;
-            const mesh = new THREE.Mesh(new THREE.BoxGeometry(t==='checkpoint'?35:24, 2, t==='checkpoint'?35:24), new THREE.MeshStandardMaterial({color: color}));
+            if(t==='ice') color = 0xffffff;
+            if(t==='lava') color = 0xff4400;
+
+            const mesh = new THREE.Mesh(new THREE.BoxGeometry(t==='checkpoint'?40:25, 2, t==='checkpoint'?40:25), new THREE.MeshStandardMaterial({
+                color: color, 
+                metalness: 0.6, 
+                transparent: t==='fake', 
+                opacity: t==='fake' ? 0.3 : 1
+            }));
             mesh.position.set(x, y, z); scene.add(mesh);
-            if(t==='spike') {
-                const s = new THREE.Mesh(new THREE.ConeGeometry(1.2, 2.5, 8), new THREE.MeshStandardMaterial({color: 0xff0000}));
-                s.position.set(0, 1.8, 0); mesh.add(s);
+
+            if(t==='rotate') {
+                const bar = new THREE.Mesh(new THREE.BoxGeometry(25, 1.5, 1.5), new THREE.MeshStandardMaterial({color: 0xffff00}));
+                bar.position.y = 2; mesh.add(bar);
+                obstacles.push({m: bar, t: 'rotate'});
+            }
+            if(t==='checkpoint') {
+                const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 200, 8), new THREE.MeshBasicMaterial({color: 0x00ff00, transparent: true, opacity: 0.2}));
+                beam.position.y = 100; mesh.add(beam);
             }
             platforms.push({mesh, type: t, ox: x, oy: y, oz: z});
         }
@@ -180,14 +216,18 @@
         function animate() {
             requestAnimationFrame(animate);
             if(!isGameStarted) return;
+            const time = clock.getElapsedTime();
             player.rotation.y = yaw;
+            
             let dir = new THREE.Vector3();
             if(keys['KeyW']) dir.z -= 1; if(keys['KeyS']) dir.z += 1;
             if(keys['KeyA']) dir.x -= 1; if(keys['KeyD']) dir.x += 1;
             dir.applyQuaternion(player.quaternion).normalize();
-            player.position.addScaledVector(dir, 0.48);
+            
+            let speed = 0.5;
+            player.position.addScaledVector(dir, speed);
 
-            if(keys['Space'] && !isJumping) { velocityY = 0.52; isJumping = true; }
+            if(keys['Space'] && !isJumping) { velocityY = 0.55; isJumping = true; }
             player.position.y += velocityY; velocityY -= 0.022;
 
             platforms.forEach(p => {
@@ -197,16 +237,23 @@
                         player.position.y = p.mesh.position.y + 3; velocityY = 0; isJumping = false;
                         if(p.type==='checkpoint' && checkpoint.y < p.mesh.position.y) checkpoint.set(p.mesh.position.x, p.mesh.position.y+5, p.mesh.position.z);
                     }
-                    if(p.type==='speed') player.position.addScaledVector(dir, 0.7);
-                    if(p.type==='jump') { velocityY = 0.85; isJumping = true; }
-                    if(p.type==='vanish') setTimeout(() => p.mesh.visible = false, 500);
-                    if(p.type==='spike' && player.position.y < p.mesh.position.y + 3) player.position.copy(checkpoint);
+                    if(p.type==='speed') player.position.addScaledVector(dir, 0.8);
+                    if(p.type==='trampoline') { velocityY = 1.1; isJumping = true; }
+                    if(p.type==='vanish') setTimeout(() => p.mesh.visible = false, 400);
+                    if(p.type==='lava' || p.type==='spike') player.position.copy(checkpoint);
+                    if(p.type==='wind') player.position.x += 0.5;
                 }
-                if(p.type==='moving') p.mesh.position.x = p.ox + Math.sin(Date.now()*0.0015)*20;
+                if(p.type==='moving') p.mesh.position.x = p.ox + Math.sin(time*2)*25;
             });
 
-            if(player.position.y < -50) player.position.copy(checkpoint);
-            camera.position.lerp(player.position.clone().add(new THREE.Vector3(0, 12, 28).applyQuaternion(player.quaternion)), 0.1);
+            obstacles.forEach(o => {
+                if(o.t === 'rotate') o.m.rotation.y += 0.08;
+                if(new THREE.Box3().setFromObject(o.m).intersectsBox(new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1,2,1)))) player.position.copy(checkpoint);
+            });
+
+            if(player.position.y < -60) player.position.copy(checkpoint);
+            
+            camera.position.lerp(player.position.clone().add(new THREE.Vector3(0, 15, 35).applyQuaternion(player.quaternion)), 0.1);
             camera.lookAt(player.position.clone().add(new THREE.Vector3(0, 3, 0)));
             document.getElementById('h-val').innerText = Math.floor(player.position.y);
             renderer.render(scene, camera);
