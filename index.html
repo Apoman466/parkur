@@ -2,239 +2,270 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SKYLINE OMEGA: ULTIMATE</title>
+    <title>3D Parkur - Lüks Versiyon</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Segoe UI', sans-serif; touch-action: none; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; display: flex; align-items: center; justify-content: center; z-index: 5000; }
-        .card { background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); text-align: center; border: 4px solid #4CAF50; width: 300px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 2px solid #ddd; box-sizing: border-box; }
-        .btn-g { background: #4285F4; color: white; padding: 12px; border: none; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; }
-        
-        /* KOZMETİK PANELİ */
-        #side-menu { position: absolute; right: -320px; top: 0; width: 300px; height: 100%; background: rgba(255,255,255,0.95); transition: 0.4s; z-index: 4000; padding: 20px; box-shadow: -5px 0 20px rgba(0,0,0,0.1); overflow-y: auto; }
-        #side-menu.open { right: 0; }
-        .tab-btn { position: absolute; left: -60px; top: 20px; width: 60px; height: 60px; background: #4CAF50; color: white; border-radius: 15px 0 0 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 25px; }
-        
-        select, .c-pick { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; }
-        #ui { position: absolute; top: 20px; left: 20px; z-index: 100; pointer-events: none; font-weight: bold; }
+        body { margin: 0; overflow: hidden; background-color: #87CEEB; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #game-info {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            text-align: center;
+            text-shadow: 2px 2px 4px #000000;
+            pointer-events: none;
+            z-index: 10;
+        }
+        h1 { margin: 0; font-size: 40px; text-transform: uppercase; letter-spacing: 2px; }
+        p { font-size: 20px; font-weight: bold; }
+        #game-over {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 20;
+        }
+        button {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        button:hover { transform: scale(1.05); background: #ff6b81; }
     </style>
 </head>
 <body>
 
-    <audio id="bg-music" loop><source src="sarki.mp3" type="audio/mpeg"></audio>
-
-    <div id="overlay">
-        <div class="card">
-            <h2 style="color:#4CAF50">SKYLINE OMEGA</h2>
-            <input type="text" id="nick-input" placeholder="OYUNCU ADI">
-            <input type="text" id="room-input" placeholder="ODA KODU">
-            <button class="btn-g" onclick="login()">GOOGLE İLE BAŞLA</button>
-        </div>
+    <div id="game-info">
+        <h1>SKY RUNNER 3D</h1>
+        <p>Skor: <span id="score">0</span></p>
+        <p style="font-size: 14px; opacity: 0.8;">ZIPLAMAK İÇİN BOŞLUK (SPACE) TUŞUNA BAS</p>
     </div>
 
-    <div id="ui">YÜKSEKLİK: <span id="h-val">0</span>m | ODA: <span id="r-val">-</span></div>
-
-    <div id="side-menu">
-        <div class="tab-btn" onclick="document.getElementById('side-menu').classList.toggle('open')">👕</div>
-        <h3 style="color:#4CAF50">AVATAR EDİTÖRÜ</h3>
-        
-        <label>KOSTÜM TİPİ</label>
-        <select id="skin-type" onchange="syncMyStyle()">
-            <option value="normal">Normal</option>
-            <option value="kedi">Kedi Kulaklı</option>
-            <option value="robot">Cyber Robot</option>
-            <option value="kral">Kral Tacı</option>
-        </select>
-        <input type="color" id="skin-color" value="#4CAF50" class="c-pick" onchange="syncMyStyle()">
-
-        <label>GÖZLÜK / VİZÖR</label>
-        <select id="face-type" onchange="syncMyStyle()">
-            <option value="none">Yok</option>
-            <option value="glasses">Pilot Gözlüğü</option>
-            <option value="visor">Neon Vizör</option>
-        </select>
-        <input type="color" id="face-color" value="#333333" class="c-pick" onchange="syncMyStyle()">
-
-        <label>SIRT ÇANTASI</label>
-        <select id="back-type" onchange="syncMyStyle()">
-            <option value="none">Yok</option>
-            <option value="pack">Çanta</option>
-            <option value="jetpack">Jetpack</option>
-        </select>
-        <input type="color" id="back-color" value="#E91E63" class="c-pick" onchange="syncMyStyle()">
+    <div id="game-over">
+        <h2 style="color: #2f3542; font-size: 30px;">ELENDİN!</h2>
+        <p style="color: #57606f;">Son Skorun: <span id="final-score">0</span></p>
+        <button onclick="resetGame()">Tekrar Oyna</button>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
-        const firebaseConfig = { 
-            apiKey: "AIzaSyD-gQNjOz03WhErBDD24hpJr4q5h30CCGU", 
-            authDomain: "ekiple-parkur.firebaseapp.com",
-            databaseURL: "https://ekiple-parkur-default-rtdb.firebaseio.com/", 
-            projectId: "ekiple-parkur" 
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const auth = firebase.auth();
+        // --- OYUN DEĞİŞKENLERİ ---
+        let scene, camera, renderer;
+        let player;
+        let ground;
+        let obstacles = [];
+        let score = 0;
+        let gameActive = true;
+        let frameId;
+        let spawnRate = 100; // Engel çıkma sıklığı
+        let frameCount = 0;
+        let gameSpeed = 0.5;
 
-        let scene, camera, renderer, player, myId, uName, roomId, isStarted = false;
-        let otherPlayers = {}, keys = {}, platforms = [], checkpoint = new THREE.Vector3();
-        let velocityY = 0, isJumping = false, yaw = 0;
+        // Fizik Değişkenleri
+        let playerVelocityY = 0;
+        const gravity = -0.02;
+        const jumpPower = 0.6;
+        let isJumping = false;
+        
+        // --- BAŞLANGIÇ AYARLARI ---
+        function init() {
+            // Sahne Oluşturma
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x87CEEB); // Gökyüzü mavisi
+            scene.fog = new THREE.Fog(0x87CEEB, 10, 50); // Sis efekti (derinlik için)
 
-        // Kozmetik Verisi
-        let myStyle = { skin: 'normal', sCol: '#4CAF50', face: 'none', fCol: '#333333', back: 'none', bCol: '#E91E63' };
+            // Kamera
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 7, 12); // Kamerayı yukarı ve geriye al
+            camera.lookAt(0, 0, 0);
 
-        function login() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(res => {
-                myId = res.user.uid;
-                uName = document.getElementById('nick-input').value || res.user.displayName.split(' ')[0];
-                roomId = document.getElementById('room-input').value || "genel";
-                document.getElementById('r-val').innerText = roomId;
-                document.getElementById('overlay').style.display = 'none';
-                document.getElementById('bg-music').play().catch(()=>{});
-                initGame();
-            });
-        }
-
-        function createCharModel(name, style, isMe) {
-            const group = new THREE.Group();
-            
-            // Gövde
-            const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.5), new THREE.MeshStandardMaterial({color: style.sCol}));
-            group.add(body);
-
-            // Kafa
-            const head = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.65, 0.65), new THREE.MeshStandardMaterial({color: 0xffdbac}));
-            head.position.y = 1.1; group.add(head);
-
-            // KOZMETİKLER
-            if(style.skin === 'kedi') {
-                const e = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.3, 4), new THREE.MeshStandardMaterial({color: style.sCol}));
-                e.position.set(-0.25, 0.4, 0); head.add(e);
-                const e2 = e.clone(); e2.position.x = 0.25; head.add(e2);
-            }
-            if(style.skin === 'kral') {
-                const c = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.05, 8, 16), new THREE.MeshStandardMaterial({color: '#FFD700'}));
-                c.rotation.x = Math.PI/2; c.position.y = 0.4; head.add(c);
-            }
-            if(style.face === 'visor') {
-                const v = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.15, 0.1), new THREE.MeshBasicMaterial({color: style.fCol}));
-                v.position.set(0, 0.1, 0.3); head.add(v);
-            }
-            if(style.back === 'jetpack') {
-                const j = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.3), new THREE.MeshStandardMaterial({color: style.bCol}));
-                j.position.set(0, 0, -0.4); group.add(j);
-            }
-
-            // İsim Etiketi
-            const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
-            canvas.width = 256; canvas.height = 64; ctx.fillStyle = isMe ? '#4CAF50' : '#ff00ff';
-            ctx.font = 'bold 30px Arial'; ctx.textAlign = 'center'; ctx.fillText(name, 128, 40);
-            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: new THREE.CanvasTexture(canvas)}));
-            sprite.position.y = 2.4; sprite.scale.set(2.5, 0.6, 1); group.add(sprite);
-
-            return group;
-        }
-
-        function syncMyStyle() {
-            myStyle.skin = document.getElementById('skin-type').value;
-            myStyle.sCol = document.getElementById('skin-color').value;
-            myStyle.face = document.getElementById('face-type').value;
-            myStyle.fCol = document.getElementById('face-color').value;
-            myStyle.back = document.getElementById('back-type').value;
-            myStyle.bCol = document.getElementById('back-color').value;
-            
-            if(player) {
-                const p = player.position.clone();
-                scene.remove(player);
-                player = createCharModel(uName, myStyle, true);
-                player.position.copy(p);
-                scene.add(player);
-            }
-        }
-
-        function initGame() {
-            scene = new THREE.Scene(); scene.background = new THREE.Color(0x87CEEB);
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 5000);
-            renderer = new THREE.WebGLRenderer({antialias: true});
+            // Render Motoru (Görüntü oluşturucu)
+            renderer = new THREE.WebGLRenderer({ antialias: true }); // Antialias kenarları yumuşatır
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true; // Gölgeleri aç
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             document.body.appendChild(renderer.domElement);
-            scene.add(new THREE.AmbientLight(0xffffff, 0.8));
 
-            player = createCharModel(uName, myStyle, true); scene.add(player);
+            // Işıklandırma (Lüks görünüm için çok önemli)
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); // Genel aydınlatma
+            scene.add(ambientLight);
 
-            // MULTIPLAYER SYNC
-            const roomRef = db.ref('rooms/' + roomId + '/players');
-            roomRef.child(myId).onDisconnect().remove();
-            roomRef.on('value', snap => {
-                const data = snap.val(); if(!data) return;
-                for(let id in data) {
-                    if(id === myId) continue;
-                    if(!otherPlayers[id]) {
-                        otherPlayers[id] = createCharModel(data[id].name, data[id].style, false);
-                        scene.add(otherPlayers[id]);
-                    }
-                    otherPlayers[id].position.lerp(new THREE.Vector3(data[id].x, data[id].y, data[id].z), 0.2);
-                    otherPlayers[id].rotation.y = data[id].ry;
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8); // Güneş ışığı
+            dirLight.position.set(10, 20, 10);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 2048; // Gölge kalitesi
+            dirLight.shadow.mapSize.height = 2048;
+            dirLight.shadow.camera.near = 0.5;
+            dirLight.shadow.camera.far = 50;
+            scene.add(dirLight);
+
+            // --- OYUNCU (KÜP) ---
+            const playerGeometry = new THREE.BoxGeometry(1, 1, 1);
+            // Stumble Guys tarzı parlak materyal
+            const playerMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xFFD700, // Altın sarısı
+                shininess: 100,
+                specular: 0xffffff
+            });
+            player = new THREE.Mesh(playerGeometry, playerMaterial);
+            player.position.y = 0.5; // Yerde başlasın
+            player.castShadow = true;
+            player.receiveShadow = true;
+            scene.add(player);
+
+            // --- ZEMİN ---
+            const groundGeometry = new THREE.BoxGeometry(100, 100, 100); // Sonsuz gibi görünen zemin (aslında büyük bir küp)
+            const groundMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x2ecc71, // Çimen yeşili
+            });
+            ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.position.y = -50; // Yüzey 0 noktasında olsun diye aşağı çekiyoruz
+            ground.position.z = -10;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            // --- KONTROLLER ---
+            document.addEventListener('keydown', (event) => {
+                if (event.code === 'Space' && !isJumping && gameActive) {
+                    playerVelocityY = jumpPower;
+                    isJumping = true;
+                    // Zıplarken şekil değiştirme efekti (Basit bir rotasyon)
+                    player.rotation.x -= 0.5; 
                 }
-                for(let id in otherPlayers) { if(!data[id]) { scene.remove(otherPlayers[id]); delete otherPlayers[id]; } }
             });
 
-            // BASİTLEŞTİRİLMİŞ PARKUR
-            for(let i=0; i<300; i++) {
-                let x = Math.sin(i*0.3)*40, y = i*4.5, z = Math.cos(i*0.3)*40;
-                let isCP = i % 10 === 0;
-                let mesh = new THREE.Mesh(new THREE.BoxGeometry(isCP?35:25, 2, isCP?35:25), new THREE.MeshStandardMaterial({color: isCP?0x00ff00:0xffffff}));
-                mesh.position.set(x, y, z); scene.add(mesh);
-                platforms.push({mesh, type: isCP?'cp':'n'});
-                if(i===0) { checkpoint.set(x, y+5, z); player.position.copy(checkpoint); }
-            }
+            // Pencere boyutu değişirse
+            window.addEventListener('resize', onWindowResize, false);
 
-            window.onkeydown = e => keys[e.code] = true; window.onkeyup = e => keys[e.code] = false;
-            document.addEventListener('mousemove', e => { if(document.pointerLockElement) yaw -= e.movementX*0.003; });
-            document.addEventListener('mousedown', () => document.body.requestPointerLock());
-
-            setInterval(() => {
-                if(isStarted) roomRef.child(myId).set({x: player.position.x, y: player.position.y, z: player.position.z, ry: player.rotation.y, name: uName, style: myStyle});
-            }, 50);
-
-            isStarted = true;
             animate();
         }
 
+        // --- OYUN DÖNGÜSÜ ---
         function animate() {
-            requestAnimationFrame(animate); if(!isStarted) return;
-            player.rotation.y = yaw;
-            let dir = new THREE.Vector3();
-            if(keys['KeyW']) dir.z -= 1; if(keys['KeyS']) dir.z += 1;
-            if(keys['KeyA']) dir.x -= 1; if(keys['KeyD']) dir.x += 1;
-            dir.applyQuaternion(player.quaternion).normalize();
-            player.position.addScaledVector(dir, 0.5);
+            if (!gameActive) return;
 
-            if(keys['Space'] && !isJumping) { velocityY = 0.5; isJumping = true; }
-            player.position.y += velocityY; velocityY -= 0.02;
+            frameId = requestAnimationFrame(animate);
+            frameCount++;
 
-            platforms.forEach(p => {
-                const b = new THREE.Box3().setFromObject(p.mesh);
-                if(new THREE.Box3().setFromCenterAndSize(player.position, new THREE.Vector3(1,4,1)).intersectsBox(b)) {
-                    if(velocityY <= 0 && player.position.y > p.mesh.position.y) {
-                        player.position.y = p.mesh.position.y + 2.8; velocityY = 0; isJumping = false;
-                        if(p.type==='cp' && checkpoint.y < p.mesh.position.y) checkpoint.set(p.mesh.position.x, p.mesh.position.y+5, p.mesh.position.z);
+            // 1. OYUNCU FİZİĞİ
+            player.position.y += playerVelocityY;
+            playerVelocityY += gravity;
+
+            // Zemin çarpışması
+            if (player.position.y <= 0.5) {
+                player.position.y = 0.5;
+                playerVelocityY = 0;
+                isJumping = false;
+                // Yerdeyken oyuncuyu düzelt
+                player.rotation.x = 0; 
+                player.rotation.z = 0;
+            } else {
+                // Havadayken takla atma efekti
+                player.rotation.x -= 0.05;
+            }
+
+            // 2. ENGEL OLUŞTURMA
+            if (frameCount % spawnRate === 0) {
+                createObstacle();
+                // Oyun ilerledikçe hızlansın ve sıklaşsın
+                if (spawnRate > 40) spawnRate -= 1;
+                gameSpeed += 0.001;
+            }
+
+            // 3. ENGELLERİ HAREKET ETTİRME VE ÇARPIŞMA
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                let obs = obstacles[i];
+                obs.position.z += gameSpeed; // Kameraya doğru getir
+
+                // Çarpışma Kontrolü (Basit kutu çarpışması)
+                // Oyuncu Z: 0, Engel Z: obs.position.z
+                // Oyuncu Y: player.position.y, Engel Y: 0.5 ile 1.5 arası (boyuta göre)
+                
+                // Z ekseninde yakın mı?
+                if (obs.position.z > -0.8 && obs.position.z < 0.8) {
+                    // Y ekseninde çarpıyor mu? (Zıplamadıysa)
+                    // Engel yüksekliğini ve oyuncu altını hesapla
+                    if (player.position.y < 1.2) { // Basitçe: Oyuncu yeterince yüksekte değilse
+                        gameOver();
                     }
                 }
-            });
 
-            if(player.position.y < -30) player.position.copy(checkpoint);
-            camera.position.lerp(player.position.clone().add(new THREE.Vector3(0, 12, 28).applyQuaternion(player.quaternion)), 0.1);
-            camera.lookAt(player.position);
-            document.getElementById('h-val').innerText = Math.floor(player.position.y);
-            renderer.render(scene, camera);
+                // Ekrandan çıktıysa sil
+                if (obs.position.z > 5) {
+                    scene.remove(obs);
+                    obstacles.splice(i, 1);
+                    score += 10;
+                    document.getElementById('score').innerText = score;
+                }
+            }
+            
+            // Koşu efekti için zemin deseni kayıyormuş gibi hissettir (opsiyonel, burada ışıkla yapıyoruz)
         }
+
+        function createObstacle() {
+            // Rastgele renk
+            const colors = [0xff4757, 0x5352ed, 0xffa502, 0xff6348];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshPhongMaterial({ color: randomColor });
+            const obstacle = new THREE.Mesh(geometry, material);
+            
+            obstacle.position.set(0, 0.5, -40); // Uzakta başlat
+            obstacle.castShadow = true;
+            obstacle.receiveShadow = true;
+            
+            scene.add(obstacle);
+            obstacles.push(obstacle);
+        }
+
+        function gameOver() {
+            gameActive = false;
+            cancelAnimationFrame(frameId);
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('game-over').style.display = 'block';
+        }
+
+        function resetGame() {
+            // Değişkenleri sıfırla
+            score = 0;
+            document.getElementById('score').innerText = score;
+            document.getElementById('game-over').style.display = 'none';
+            gameSpeed = 0.4;
+            spawnRate = 100;
+            frameCount = 0;
+            gameActive = true;
+
+            // Sahnedeki engelleri temizle
+            for (let obs of obstacles) {
+                scene.remove(obs);
+            }
+            obstacles = [];
+
+            animate();
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Başlat
+        init();
+
     </script>
 </body>
 </html>
